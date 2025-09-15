@@ -1,0 +1,97 @@
+{
+	"name": "updateCategoriaCliente",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "clientes",
+						"type": "DatasetReference"
+					},
+					"name": "source1"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "tablaCategoriaCliente",
+						"type": "DatasetReference"
+					},
+					"name": "sink1"
+				}
+			],
+			"transformations": [
+				{
+					"name": "select1"
+				},
+				{
+					"name": "aggregate1"
+				},
+				{
+					"name": "AlterRow1"
+				},
+				{
+					"name": "derivedColumn1"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          id as integer,",
+				"          tipo as string,",
+				"          mostrar_como as string,",
+				"          nombres as string,",
+				"          apellidos as string,",
+				"          identificador1 as string,",
+				"          identificador2 as string,",
+				"          categoria as (id as string, nombre as string, lista_precios as integer),",
+				"          direccion as string,",
+				"          localidad as string,",
+				"          departamento as string,",
+				"          pais as string,",
+				"          telefono1 as string,",
+				"          telefono2 as string,",
+				"          email1 as string,",
+				"          email2 as string,",
+				"          comentario as string,",
+				"          ramo_ocupacion as string,",
+				"          pagina_web as string,",
+				"          aniversario as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false,",
+				"     documentForm: 'documentPerLine') ~> source1",
+				"source1 select(mapColumn(",
+				"          id = categoria.id,",
+				"          nombre = categoria.nombre,",
+				"          lista_precios = categoria.lista_precios",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> select1",
+				"derivedColumn1 aggregate(groupBy(id,",
+				"          nombre,",
+				"          lista_precios),",
+				"     conteo = count(id)) ~> aggregate1",
+				"aggregate1 alterRow(upsertIf(true())) ~> AlterRow1",
+				"select1 derive(id = toInteger(id)) ~> derivedColumn1",
+				"AlterRow1 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     input(",
+				"          id as integer,",
+				"          nombre as string,",
+				"          lista_precios as integer",
+				"     ),",
+				"     deletable:false,",
+				"     insertable:false,",
+				"     updateable:false,",
+				"     upsertable:true,",
+				"     keys:['id'],",
+				"     format: 'table',",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     errorHandlingOption: 'stopOnFirstError') ~> sink1"
+			]
+		}
+	}
+}

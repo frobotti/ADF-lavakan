@@ -1,0 +1,56 @@
+{
+	"name": "tablaVariedad",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "db",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "dbo"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "id",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "id_producto",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "nombre",
+				"type": "varchar"
+			},
+			{
+				"name": "descripcion",
+				"type": "text"
+			},
+			{
+				"name": "fecha_modificado",
+				"type": "datetime",
+				"precision": 23,
+				"scale": 3
+			},
+			{
+				"name": "precio",
+				"type": "decimal",
+				"precision": 18,
+				"scale": 0
+			},
+			{
+				"name": "id_moneda",
+				"type": "int",
+				"precision": 10
+			}
+		],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "variedad"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

@@ -1,0 +1,146 @@
+{
+	"name": "tipoProducto",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "BlobStorage",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "blobEntrante"
+		},
+		"annotations": [],
+		"type": "Json",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"fileName": "tipos",
+				"container": "lavakan"
+			}
+		},
+		"schema": {
+			"type": "object",
+			"properties": {
+				"id": {
+					"type": "string"
+				},
+				"nombre": {
+					"type": "string"
+				},
+				"fecha_modificado": {
+					"type": "string"
+				},
+				"hijos": {
+					"type": "array",
+					"items": {
+						"type": "object",
+						"properties": {
+							"id": {
+								"type": "string"
+							},
+							"nombre": {
+								"type": "string"
+							},
+							"fecha_modificado": {
+								"type": "string"
+							},
+							"hijos": {
+								"type": "array",
+								"items": {
+									"type": "object",
+									"properties": {
+										"id": {
+											"type": "string"
+										},
+										"nombre": {
+											"type": "string"
+										},
+										"fecha_modificado": {
+											"type": "string"
+										},
+										"hijos": {
+											"type": "array",
+											"items": {
+												"type": "object",
+												"properties": {
+													"id": {
+														"type": "string"
+													},
+													"nombre": {
+														"type": "string"
+													},
+													"fecha_modificado": {
+														"type": "string"
+													},
+													"hijos": {
+														"type": "null"
+													},
+													"cat_impuestos": {
+														"type": "object",
+														"properties": {
+															"id": {
+																"type": "string"
+															},
+															"nombre": {
+																"type": "string"
+															},
+															"abreviacion": {
+																"type": "string"
+															}
+														}
+													}
+												}
+											}
+										},
+										"cat_impuestos": {
+											"type": "object",
+											"properties": {
+												"id": {
+													"type": "string"
+												},
+												"nombre": {
+													"type": "string"
+												},
+												"abreviacion": {
+													"type": "string"
+												}
+											}
+										}
+									}
+								}
+							},
+							"cat_impuestos": {
+								"type": "object",
+								"properties": {
+									"id": {
+										"type": "string"
+									},
+									"nombre": {
+										"type": "string"
+									},
+									"abreviacion": {
+										"type": "string"
+									}
+								}
+							}
+						}
+					}
+				},
+				"cat_impuestos": {
+					"type": "object",
+					"properties": {
+						"id": {
+							"type": "string"
+						},
+						"nombre": {
+							"type": "string"
+						},
+						"abreviacion": {
+							"type": "string"
+						}
+					}
+				}
+			}
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

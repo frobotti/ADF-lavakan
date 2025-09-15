@@ -1,0 +1,186 @@
+{
+	"name": "ventas",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "BlobStorage",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "blobEntrante"
+		},
+		"annotations": [],
+		"type": "Excel",
+		"typeProperties": {
+			"sheetName": "Sheet1",
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"fileName": "diario_ventas.xlsx",
+				"container": "lavakan"
+			},
+			"firstRowAsHeader": true
+		},
+		"schema": [
+			{
+				"name": "Fecha",
+				"type": "String"
+			},
+			{
+				"name": "Comprobante",
+				"type": "String"
+			},
+			{
+				"name": "Numero",
+				"type": "String"
+			},
+			{
+				"name": "SucNombre",
+				"type": "String"
+			},
+			{
+				"name": "Identificador",
+				"type": "String"
+			},
+			{
+				"name": "Contacto",
+				"type": "String"
+			},
+			{
+				"name": "ArtCodigo",
+				"type": "String"
+			},
+			{
+				"name": "ArtSKU",
+				"type": "String"
+			},
+			{
+				"name": "ArtNombre",
+				"type": "String"
+			},
+			{
+				"name": "ArtComentario",
+				"type": "String"
+			},
+			{
+				"name": "ArtCantidad",
+				"type": "String"
+			},
+			{
+				"name": "Moneda",
+				"type": "String"
+			},
+			{
+				"name": "ArtNetoFinal",
+				"type": "String"
+			},
+			{
+				"name": "ArtImpuesto1",
+				"type": "String"
+			},
+			{
+				"name": "ArtTasaImp1",
+				"type": "String"
+			},
+			{
+				"name": "ArtDescuento",
+				"type": "String"
+			},
+			{
+				"name": "ArtBrutoFinal",
+				"type": "String"
+			},
+			{
+				"name": "Vendedor",
+				"type": "String"
+			},
+			{
+				"name": "Comentario",
+				"type": "String"
+			},
+			{
+				"name": "Id",
+				"type": "String"
+			},
+			{
+				"name": "ContactoId",
+				"type": "String"
+			},
+			{
+				"name": "Estado",
+				"type": "String"
+			},
+			{
+				"name": "QDecimalesMoneda",
+				"type": "String"
+			},
+			{
+				"name": "FormatoMoneda",
+				"type": "String"
+			},
+			{
+				"name": "TotalComprobante",
+				"type": "String"
+			},
+			{
+				"name": "RedondeoComprobante",
+				"type": "String"
+			},
+			{
+				"name": "ArtId",
+				"type": "String"
+			},
+			{
+				"name": "AVaId",
+				"type": "String"
+			},
+			{
+				"name": "ArtCodigoBarras",
+				"type": "String"
+			},
+			{
+				"name": "UMeDecimales",
+				"type": "String"
+			},
+			{
+				"name": "ArtImpuesto2",
+				"type": "String"
+			},
+			{
+				"name": "ArtTasaImp2",
+				"type": "String"
+			},
+			{
+				"name": "ArtImpuesto3",
+				"type": "String"
+			},
+			{
+				"name": "ArtTasaImp3",
+				"type": "String"
+			},
+			{
+				"name": "ArtImpuesto4",
+				"type": "String"
+			},
+			{
+				"name": "ArtTasaImp4",
+				"type": "String"
+			},
+			{
+				"name": "ArtImpuesto5",
+				"type": "String"
+			},
+			{
+				"name": "ArtTasaImp5",
+				"type": "String"
+			},
+			{
+				"name": "ArtImpuesto6",
+				"type": "String"
+			},
+			{
+				"name": "ArtTasaImp6",
+				"type": "String"
+			}
+		]
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

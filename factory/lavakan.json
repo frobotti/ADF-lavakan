@@ -1,0 +1,9 @@
+{
+	"name": "lavakan",
+	"location": "eastus2",
+	"identity": {
+		"type": "SystemAssigned",
+		"principalId": "758eada3-2499-4d57-9d68-cb4acb97af01",
+		"tenantId": "4ba88382-42df-4c68-9659-608d871df94f"
+	}
+}

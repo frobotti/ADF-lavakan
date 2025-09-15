@@ -1,0 +1,104 @@
+{
+	"name": "utilidad_ventas_articulos",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "utilidad_ventas_articulos",
+						"type": "DatasetReference"
+					},
+					"name": "source1"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "utilidades",
+						"type": "DatasetReference"
+					},
+					"name": "sink1"
+				}
+			],
+			"transformations": [
+				{
+					"name": "select1"
+				},
+				{
+					"name": "AlterRow1"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          ArtID as integer,",
+				"          AVaID as integer,",
+				"          Nombre as string,",
+				"          Codigo as string,",
+				"          Cantidad as integer,",
+				"          Ventas as decimal(10,2),",
+				"          Costos as decimal(10,2),",
+				"          Utilidad as string,",
+				"          UtilidadProm as string,",
+				"          PorcUtilidad as string,",
+				"          PorcPart as string,",
+				"          Ranking as string,",
+				"          UMeDecimales as string,",
+				"          suc as integer,",
+				"          fecha as date",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false) ~> source1",
+				"source1 select(mapColumn(",
+				"          id_producto = ArtID,",
+				"          id_variedad = AVaID,",
+				"          nombre_producto = Nombre,",
+				"          codigo_producto = Codigo,",
+				"          cantidad = Cantidad,",
+				"          valor_venta = Ventas,",
+				"          valor_costo = Costos,",
+				"          sucursal = suc,",
+				"          fecha",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> select1",
+				"select1 alterRow(upsertIf(true())) ~> AlterRow1",
+				"AlterRow1 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     input(",
+				"          id_producto as integer,",
+				"          id_variedad as integer,",
+				"          codigo_producto as string,",
+				"          cantidad as integer,",
+				"          moneda_id as integer,",
+				"          valor_venta as decimal(18,6),",
+				"          valor_costo as decimal(18,6),",
+				"          sucursal as integer,",
+				"          fecha as date,",
+				"          nombre_producto as string",
+				"     ),",
+				"     deletable:false,",
+				"     insertable:true,",
+				"     updateable:false,",
+				"     upsertable:true,",
+				"     keys:['id_producto','id_variedad','sucursal','fecha'],",
+				"     format: 'table',",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     errorHandlingOption: 'stopOnFirstError',",
+				"     mapColumn(",
+				"          id_producto,",
+				"          id_variedad,",
+				"          codigo_producto,",
+				"          cantidad,",
+				"          valor_venta,",
+				"          valor_costo,",
+				"          sucursal,",
+				"          fecha,",
+				"          nombre_producto",
+				"     )) ~> sink1"
+			]
+		}
+	}
+}

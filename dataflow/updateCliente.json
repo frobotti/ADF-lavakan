@@ -1,0 +1,136 @@
+{
+	"name": "updateCliente",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "clientes",
+						"type": "DatasetReference"
+					},
+					"name": "source1"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "tablaCliente",
+						"type": "DatasetReference"
+					},
+					"name": "sink1"
+				}
+			],
+			"transformations": [
+				{
+					"name": "derivedColumn1"
+				},
+				{
+					"name": "select1"
+				},
+				{
+					"name": "alterRow1"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          id as integer,",
+				"          tipo as string,",
+				"          mostrar_como as string,",
+				"          nombres as string,",
+				"          apellidos as string,",
+				"          identificador1 as string,",
+				"          identificador2 as string,",
+				"          categoria as (id as string, nombre as string, lista_precios as integer),",
+				"          direccion as string,",
+				"          localidad as string,",
+				"          departamento as string,",
+				"          pais as string,",
+				"          telefono1 as string,",
+				"          telefono2 as string,",
+				"          email1 as string,",
+				"          email2 as string,",
+				"          comentario as string,",
+				"          ramo_ocupacion as string,",
+				"          pagina_web as string,",
+				"          aniversario as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false,",
+				"     documentForm: 'documentPerLine') ~> source1",
+				"select1 derive(categoria_id = toInteger(categoria_id),",
+				"          aniversario = toDate(aniversario),",
+				"          id = toLong(id)) ~> derivedColumn1",
+				"source1 select(mapColumn(",
+				"          id,",
+				"          tipo,",
+				"          mostrar_como,",
+				"          nombres,",
+				"          apellidos,",
+				"          identificador1,",
+				"          identificador2,",
+				"          categoria_id = categoria.id,",
+				"          localidad,",
+				"          departamento,",
+				"          pais,",
+				"          telefono1,",
+				"          telefono2,",
+				"          email1,",
+				"          email2,",
+				"          aniversario",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> select1",
+				"derivedColumn1 alterRow(upsertIf(true())) ~> alterRow1",
+				"alterRow1 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     input(",
+				"          id as long,",
+				"          tipo as string,",
+				"          mostrar_como as string,",
+				"          nombres as string,",
+				"          apellidos as string,",
+				"          identificador1 as string,",
+				"          identificador2 as string,",
+				"          categoria_id as integer,",
+				"          localidad as string,",
+				"          departamento as string,",
+				"          pais as string,",
+				"          telefono1 as string,",
+				"          telefono2 as string,",
+				"          email1 as string,",
+				"          email2 as string,",
+				"          aniversario as date",
+				"     ),",
+				"     deletable:false,",
+				"     insertable:false,",
+				"     updateable:false,",
+				"     upsertable:true,",
+				"     keys:['id'],",
+				"     format: 'table',",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     errorHandlingOption: 'stopOnFirstError',",
+				"     mapColumn(",
+				"          id,",
+				"          tipo,",
+				"          mostrar_como,",
+				"          nombres,",
+				"          apellidos,",
+				"          identificador1,",
+				"          identificador2,",
+				"          categoria_id,",
+				"          localidad,",
+				"          departamento,",
+				"          pais,",
+				"          telefono1,",
+				"          telefono2,",
+				"          email1,",
+				"          email2,",
+				"          aniversario",
+				"     )) ~> sink1"
+			]
+		}
+	}
+}

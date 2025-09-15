@@ -1,0 +1,59 @@
+{
+	"name": "tablaCotizacion",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "db",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "dbo"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "id",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "fecha",
+				"type": "datetime",
+				"precision": 23,
+				"scale": 3
+			},
+			{
+				"name": "id_moneda_origen",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "id_moneda_destino",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "valor_compra",
+				"type": "decimal",
+				"precision": 18,
+				"scale": 6
+			},
+			{
+				"name": "valor_venta",
+				"type": "decimal",
+				"precision": 18,
+				"scale": 6
+			},
+			{
+				"name": "redondeo",
+				"type": "int",
+				"precision": 10
+			}
+		],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "cotizacion"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

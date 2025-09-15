@@ -1,0 +1,62 @@
+{
+	"name": "suc1stock",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "BlobStorage",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "blobEntrante"
+		},
+		"annotations": [],
+		"type": "Json",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"fileName": "stock-suc-1",
+				"container": "lavakan"
+			}
+		},
+		"schema": {
+			"type": "object",
+			"properties": {
+				"articulo": {
+					"type": "integer"
+				},
+				"codigo": {
+					"type": "string"
+				},
+				"nombre": {
+					"type": "string"
+				},
+				"variedad": {
+					"type": "integer"
+				},
+				"estado": {
+					"type": "object",
+					"properties": {
+						"id": {
+							"type": "integer"
+						},
+						"nombre": {
+							"type": "string"
+						},
+						"abreviacion": {
+							"type": "string"
+						}
+					}
+				},
+				"cantidad": {
+					"type": "number"
+				},
+				"modificado_articulo": {
+					"type": "string"
+				},
+				"modificado_stock": {
+					"type": "string"
+				}
+			}
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

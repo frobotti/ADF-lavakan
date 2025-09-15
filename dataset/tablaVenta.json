@@ -1,0 +1,111 @@
+{
+	"name": "tablaVenta",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "db",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "dbo"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "id",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "fecha",
+				"type": "datetime",
+				"precision": 23,
+				"scale": 3
+			},
+			{
+				"name": "comprobante",
+				"type": "varchar"
+			},
+			{
+				"name": "numero_comprobante",
+				"type": "varchar"
+			},
+			{
+				"name": "id_sucursal",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "comentario",
+				"type": "nvarchar"
+			},
+			{
+				"name": "id_cliente",
+				"type": "bigint",
+				"precision": 19
+			},
+			{
+				"name": "sku",
+				"type": "varchar"
+			},
+			{
+				"name": "comentario_producto",
+				"type": "nvarchar"
+			},
+			{
+				"name": "cantidad",
+				"type": "decimal",
+				"precision": 18,
+				"scale": 2
+			},
+			{
+				"name": "id_producto",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "id_variedad",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "id_moneda",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "importe_neto",
+				"type": "decimal",
+				"precision": 18,
+				"scale": 4
+			},
+			{
+				"name": "tasa_iva",
+				"type": "decimal",
+				"precision": 5,
+				"scale": 2
+			},
+			{
+				"name": "descuento_porcentaje",
+				"type": "decimal",
+				"precision": 5,
+				"scale": 2
+			},
+			{
+				"name": "importe_bruto",
+				"type": "decimal",
+				"precision": 18,
+				"scale": 4
+			},
+			{
+				"name": "vendedor",
+				"type": "nvarchar"
+			}
+		],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "venta"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

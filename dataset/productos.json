@@ -1,0 +1,139 @@
+{
+	"name": "productos",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "BlobStorage",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "blobEntrante"
+		},
+		"annotations": [],
+		"type": "Json",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"fileName": "allProducts",
+				"container": "lavakan"
+			}
+		},
+		"schema": {
+			"type": "object",
+			"properties": {
+				"baja": {
+					"type": "boolean"
+				},
+				"id": {
+					"type": "integer"
+				},
+				"codigo": {
+					"type": "string"
+				},
+				"nombre": {
+					"type": "string"
+				},
+				"fecha_alta": {
+					"type": "string"
+				},
+				"fecha_modificado": {
+					"type": "string"
+				},
+				"descripcion_corta": {
+					"type": "string"
+				},
+				"descripcion_larga": {
+					"type": "string"
+				},
+				"stock": {
+					"type": "integer"
+				},
+				"precio": {
+					"type": "number"
+				},
+				"impuesto": {
+					"type": "number"
+				},
+				"id_moneda": {
+					"type": "integer"
+				},
+				"tipo": {
+					"type": "object",
+					"properties": {
+						"id": {
+							"type": "integer"
+						},
+						"nombre": {
+							"type": "string"
+						}
+					}
+				},
+				"marca": {
+					"type": "object",
+					"properties": {
+						"id": {
+							"type": "integer"
+						},
+						"nombre": {
+							"type": "string"
+						}
+					}
+				},
+				"unidad_de_medida": {
+					"type": "object",
+					"properties": {
+						"id": {
+							"type": "integer"
+						},
+						"nombre": {
+							"type": "string"
+						},
+						"decimales": {
+							"type": "integer"
+						}
+					}
+				},
+				"variedades": {
+					"type": "array",
+					"items": {
+						"type": "object",
+						"properties": {
+							"id": {
+								"type": "integer"
+							},
+							"nombre": {
+								"type": "string"
+							},
+							"descripcion": {
+								"type": "string"
+							},
+							"fecha_modificado": {
+								"type": "string"
+							},
+							"precio": {
+								"type": "number"
+							},
+							"id_moneda": {
+								"type": "integer"
+							},
+							"atributos": {
+								"type": "array",
+								"items": {
+									"type": "object",
+									"properties": {
+										"atributo": {
+											"type": "string"
+										},
+										"valor": {
+											"type": "string"
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

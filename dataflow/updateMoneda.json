@@ -1,0 +1,65 @@
+{
+	"name": "updateMoneda",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "currency",
+						"type": "DatasetReference"
+					},
+					"name": "Moneda"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "tablaMoneda",
+						"type": "DatasetReference"
+					},
+					"name": "dbMoneda"
+				}
+			],
+			"transformations": [
+				{
+					"name": "AlterRow1"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          id as integer,",
+				"          nombre as string,",
+				"          simbolo as string,",
+				"          codigo_internacional as integer,",
+				"          codigo_ISO4217 as string,",
+				"          decimales as integer",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false,",
+				"     documentForm: 'documentPerLine') ~> Moneda",
+				"Moneda alterRow(upsertIf(true())) ~> AlterRow1",
+				"AlterRow1 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     input(",
+				"          id as integer,",
+				"          nombre as string,",
+				"          simbolo as string,",
+				"          codigo_internacional as integer,",
+				"          codigo_iso4217 as string,",
+				"          decimales as integer",
+				"     ),",
+				"     deletable:false,",
+				"     insertable:false,",
+				"     updateable:false,",
+				"     upsertable:true,",
+				"     keys:['id'],",
+				"     format: 'table',",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     errorHandlingOption: 'stopOnFirstError') ~> dbMoneda"
+			]
+		}
+	}
+}

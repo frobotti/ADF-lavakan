@@ -1,0 +1,83 @@
+{
+	"name": "tablaProducto",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "db",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "dbo"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "id",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "codigo",
+				"type": "varchar"
+			},
+			{
+				"name": "nombre",
+				"type": "varchar"
+			},
+			{
+				"name": "descripcion_corta",
+				"type": "text"
+			},
+			{
+				"name": "descripcion_larga",
+				"type": "text"
+			},
+			{
+				"name": "fecha_alta",
+				"type": "datetime",
+				"precision": 23,
+				"scale": 3
+			},
+			{
+				"name": "fecha_modificado",
+				"type": "datetime",
+				"precision": 23,
+				"scale": 3
+			},
+			{
+				"name": "baja",
+				"type": "bit"
+			},
+			{
+				"name": "precio_base",
+				"type": "decimal",
+				"precision": 18,
+				"scale": 4
+			},
+			{
+				"name": "id_moneda",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "id_tipo_producto",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "id_marca",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "unidad_medida_nombre",
+				"type": "varchar"
+			}
+		],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "producto"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

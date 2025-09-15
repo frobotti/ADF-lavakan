@@ -1,0 +1,161 @@
+{
+	"name": "updateTipoProducto",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "tipoProducto",
+						"type": "DatasetReference"
+					},
+					"name": "tipoProducto"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "tablaTipoProducto",
+						"type": "DatasetReference"
+					},
+					"name": "dbTipoProducto"
+				}
+			],
+			"transformations": [
+				{
+					"name": "AlterRow1"
+				},
+				{
+					"name": "derivedColumn2"
+				},
+				{
+					"name": "union1"
+				},
+				{
+					"name": "flatten1"
+				},
+				{
+					"name": "select1"
+				},
+				{
+					"name": "select2"
+				},
+				{
+					"name": "flatten2"
+				},
+				{
+					"name": "select3"
+				},
+				{
+					"name": "flatten3"
+				},
+				{
+					"name": "select4"
+				},
+				{
+					"name": "filter1"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          id as string,",
+				"          nombre as string,",
+				"          fecha_modificado as string,",
+				"          hijos as (id as string, nombre as string, fecha_modificado as string, hijos as (id as string, nombre as string, fecha_modificado as string, hijos as (id as string, nombre as string, fecha_modificado as string, hijos as string, cat_impuestos as (id as string, nombre as string, abreviacion as string))[], cat_impuestos as (id as string, nombre as string, abreviacion as string))[], cat_impuestos as (id as string, nombre as string, abreviacion as string))[],",
+				"          cat_impuestos as (id as string, nombre as string, abreviacion as string)",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false,",
+				"     documentForm: 'documentPerLine') ~> tipoProducto",
+				"derivedColumn2 alterRow(upsertIf(true())) ~> AlterRow1",
+				"filter1 derive(fecha_modificado = iif(\r",
+				"  isNull(toTimestamp(fecha_modificado, 'yyyy-MM-dd\\'T\\'HH:mm:ss.SSS')), \r",
+				"  toTimestamp(fecha_modificado, 'yyyy-MM-dd\\'T\\'HH:mm:ss'), \r",
+				"  toTimestamp(fecha_modificado, 'yyyy-MM-dd\\'T\\'HH:mm:ss.SSS')\r",
+				"),",
+				"          id = toInteger(id),",
+				"          id_padre = toInteger(id_padre)) ~> derivedColumn2",
+				"select4, select3, select2, select1 union(byName: true)~> union1",
+				"tipoProducto foldDown(unroll(hijos),",
+				"     mapColumn(",
+				"          id = hijos.id,",
+				"          nombre = hijos.nombre,",
+				"          fecha_modificado = hijos.fecha_modificado,",
+				"          hijos = hijos.hijos,",
+				"          id_padre = id",
+				"     ),",
+				"     skipDuplicateMapInputs: false,",
+				"     skipDuplicateMapOutputs: false) ~> flatten1",
+				"tipoProducto select(mapColumn(",
+				"          id,",
+				"          nombre,",
+				"          fecha_modificado",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> select1",
+				"flatten1 select(mapColumn(",
+				"          id,",
+				"          nombre,",
+				"          fecha_modificado,",
+				"          id_padre",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> select2",
+				"flatten1 foldDown(unroll(hijos),",
+				"     mapColumn(",
+				"          id = hijos.id,",
+				"          nombre = hijos.nombre,",
+				"          fecha_modificado = hijos.fecha_modificado,",
+				"          hijos = hijos.hijos,",
+				"          id_padre = id",
+				"     ),",
+				"     skipDuplicateMapInputs: false,",
+				"     skipDuplicateMapOutputs: false) ~> flatten2",
+				"flatten2 select(mapColumn(",
+				"          id,",
+				"          nombre,",
+				"          fecha_modificado,",
+				"          id_padre",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> select3",
+				"flatten2 foldDown(unroll(hijos),",
+				"     mapColumn(",
+				"          id = hijos.id,",
+				"          nombre = hijos.nombre,",
+				"          fecha_modificado,",
+				"          id_padre = id",
+				"     ),",
+				"     skipDuplicateMapInputs: false,",
+				"     skipDuplicateMapOutputs: false) ~> flatten3",
+				"flatten3 select(mapColumn(",
+				"          id,",
+				"          nombre,",
+				"          fecha_modificado,",
+				"          id_padre",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> select4",
+				"union1 filter(!isNull(id)) ~> filter1",
+				"AlterRow1 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     input(",
+				"          id as integer,",
+				"          nombre as string,",
+				"          fecha_modificado as timestamp,",
+				"          id_padre as integer",
+				"     ),",
+				"     deletable:false,",
+				"     insertable:false,",
+				"     updateable:false,",
+				"     upsertable:true,",
+				"     keys:['id'],",
+				"     format: 'table',",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     errorHandlingOption: 'stopOnFirstError') ~> dbTipoProducto"
+			]
+		}
+	}
+}

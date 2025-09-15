@@ -1,0 +1,123 @@
+{
+	"name": "updateVariedades",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "productos",
+						"type": "DatasetReference"
+					},
+					"name": "source1"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "tablaVariedad",
+						"type": "DatasetReference"
+					},
+					"name": "sink1"
+				}
+			],
+			"transformations": [
+				{
+					"name": "flatten1"
+				},
+				{
+					"name": "select1"
+				},
+				{
+					"name": "derivedColumn1"
+				},
+				{
+					"name": "alterRow1"
+				},
+				{
+					"name": "filter1"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          baja as boolean,",
+				"          id as integer,",
+				"          codigo as string,",
+				"          nombre as string,",
+				"          fecha_alta as string,",
+				"          fecha_modificado as string,",
+				"          descripcion_corta as string,",
+				"          descripcion_larga as string,",
+				"          stock as integer,",
+				"          precio as double,",
+				"          impuesto as double,",
+				"          id_moneda as integer,",
+				"          tipo as (id as integer, nombre as string),",
+				"          marca as (id as integer, nombre as string),",
+				"          unidad_de_medida as (id as integer, nombre as string, decimales as integer),",
+				"          variedades as (id as integer, nombre as string, descripcion as string, fecha_modificado as string, precio as double, id_moneda as integer, atributos as (atributo as string, valor as string)[])[]",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false,",
+				"     documentForm: 'documentPerLine') ~> source1",
+				"source1 foldDown(unroll(variedades),",
+				"     mapColumn(",
+				"          id = variedades.id,",
+				"          nombre = variedades.nombre,",
+				"          descripcion = variedades.descripcion,",
+				"          fecha_modificado = variedades.fecha_modificado,",
+				"          precio = variedades.precio,",
+				"          id_moneda = variedades.id_moneda,",
+				"          id_producto = id",
+				"     ),",
+				"     skipDuplicateMapInputs: false,",
+				"     skipDuplicateMapOutputs: false) ~> flatten1",
+				"flatten1 select(mapColumn(",
+				"          id,",
+				"          nombre,",
+				"          descripcion,",
+				"          fecha_modificado,",
+				"          precio,",
+				"          id_moneda,",
+				"          id_producto",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> select1",
+				"select1 derive(fecha_modificado = toTimestamp(fecha_modificado),",
+				"          precio = toDecimal(precio)) ~> derivedColumn1",
+				"derivedColumn1 alterRow(upsertIf(true())) ~> alterRow1",
+				"alterRow1 filter(!isNull(id)) ~> filter1",
+				"filter1 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     input(",
+				"          id as integer,",
+				"          id_producto as integer,",
+				"          nombre as string,",
+				"          descripcion as string,",
+				"          fecha_modificado as timestamp,",
+				"          precio as decimal(18,0),",
+				"          id_moneda as integer",
+				"     ),",
+				"     deletable:false,",
+				"     insertable:false,",
+				"     updateable:false,",
+				"     upsertable:true,",
+				"     keys:['id_producto','id'],",
+				"     format: 'table',",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     errorHandlingOption: 'stopOnFirstError',",
+				"     mapColumn(",
+				"          id,",
+				"          id_producto,",
+				"          nombre,",
+				"          descripcion,",
+				"          fecha_modificado,",
+				"          precio,",
+				"          id_moneda",
+				"     )) ~> sink1"
+			]
+		}
+	}
+}

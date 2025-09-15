@@ -1,0 +1,78 @@
+{
+	"name": "cotizacion",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "BlobStorage",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "blobEntrante"
+		},
+		"annotations": [],
+		"type": "Excel",
+		"typeProperties": {
+			"sheetName": "Sheet1",
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"fileName": "cotizaciones.xlsx",
+				"container": "lavakan"
+			},
+			"firstRowAsHeader": true
+		},
+		"schema": [
+			{
+				"name": "CDiFecha",
+				"type": "String"
+			},
+			{
+				"name": "CDiTipoCotizacion",
+				"type": "String"
+			},
+			{
+				"name": "CDiMoneda",
+				"type": "String"
+			},
+			{
+				"name": "CDiCotizaEn",
+				"type": "String"
+			},
+			{
+				"name": "CDiCompra",
+				"type": "String"
+			},
+			{
+				"name": "CDiVenta",
+				"type": "String"
+			},
+			{
+				"name": "CDiDivisaDe",
+				"type": "String"
+			},
+			{
+				"name": "CDiDivisaA",
+				"type": "String"
+			},
+			{
+				"name": "M1",
+				"type": "String"
+			},
+			{
+				"name": "M2",
+				"type": "String"
+			},
+			{
+				"name": "TCMNombre",
+				"type": "String"
+			},
+			{
+				"name": "FMT",
+				"type": "String"
+			},
+			{
+				"name": "Redondeo",
+				"type": "String"
+			}
+		]
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

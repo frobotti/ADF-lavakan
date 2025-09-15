@@ -1,0 +1,41 @@
+{
+	"name": "tablaTipoProducto",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "db",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "dbo"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "id",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "nombre",
+				"type": "nvarchar"
+			},
+			{
+				"name": "fecha_modificado",
+				"type": "datetime",
+				"precision": 23,
+				"scale": 3
+			},
+			{
+				"name": "id_padre",
+				"type": "int",
+				"precision": 10
+			}
+		],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "tipo_producto"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

@@ -1,0 +1,67 @@
+{
+	"name": "updateMarca",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "bands",
+						"type": "DatasetReference"
+					},
+					"name": "marca"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "tablaMarca",
+						"type": "DatasetReference"
+					},
+					"name": "dbMarca"
+				}
+			],
+			"transformations": [
+				{
+					"name": "AlterRow1"
+				},
+				{
+					"name": "derivedColumn1"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          id as integer,",
+				"          nombre as string,",
+				"          fecha_modificado as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false,",
+				"     documentForm: 'documentPerLine') ~> marca",
+				"derivedColumn1 alterRow(upsertIf(true())) ~> AlterRow1",
+				"marca derive(fecha_modificado = iif(\r",
+				"  fecha_modificado == '0001-01-01T00:00:00',\r",
+				"  toTimestamp('1900-01-01T00:00:00'),\r",
+				"  toTimestamp(fecha_modificado, 'yyyy-MM-dd\\'T\\'HH:mm:ss')\r",
+				")) ~> derivedColumn1",
+				"AlterRow1 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     input(",
+				"          id as integer,",
+				"          nombre as string,",
+				"          fecha_modificado as timestamp",
+				"     ),",
+				"     deletable:false,",
+				"     insertable:false,",
+				"     updateable:false,",
+				"     upsertable:true,",
+				"     keys:['id'],",
+				"     format: 'table',",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     errorHandlingOption: 'stopOnFirstError') ~> dbMarca"
+			]
+		}
+	}
+}

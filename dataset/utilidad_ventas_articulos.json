@@ -1,0 +1,88 @@
+{
+	"name": "utilidad_ventas_articulos",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "BlobStorage",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "blobEntrante"
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"fileName": "utilidad_ventas_articulos.csv",
+				"container": "lavakan"
+			},
+			"columnDelimiter": ",",
+			"escapeChar": "\\",
+			"firstRowAsHeader": true,
+			"quoteChar": "\""
+		},
+		"schema": [
+			{
+				"name": "ArtID",
+				"type": "String"
+			},
+			{
+				"name": "AVaID",
+				"type": "String"
+			},
+			{
+				"name": "Nombre",
+				"type": "String"
+			},
+			{
+				"name": "Codigo",
+				"type": "String"
+			},
+			{
+				"name": "Cantidad",
+				"type": "String"
+			},
+			{
+				"name": "Ventas",
+				"type": "String"
+			},
+			{
+				"name": "Costos",
+				"type": "String"
+			},
+			{
+				"name": "Utilidad",
+				"type": "String"
+			},
+			{
+				"name": "UtilidadProm",
+				"type": "String"
+			},
+			{
+				"name": "PorcUtilidad",
+				"type": "String"
+			},
+			{
+				"name": "PorcPart",
+				"type": "String"
+			},
+			{
+				"name": "Ranking",
+				"type": "String"
+			},
+			{
+				"name": "UMeDecimales",
+				"type": "String"
+			},
+			{
+				"name": "suc",
+				"type": "String"
+			},
+			{
+				"name": "fecha",
+				"type": "String"
+			}
+		]
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

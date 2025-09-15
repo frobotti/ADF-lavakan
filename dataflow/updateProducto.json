@@ -1,0 +1,299 @@
+{
+	"name": "updateProducto",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "productos",
+						"type": "DatasetReference"
+					},
+					"name": "source1"
+				},
+				{
+					"dataset": {
+						"referenceName": "suc11stock",
+						"type": "DatasetReference"
+					},
+					"name": "source2"
+				},
+				{
+					"dataset": {
+						"referenceName": "suc1stock",
+						"type": "DatasetReference"
+					},
+					"name": "source3"
+				},
+				{
+					"dataset": {
+						"referenceName": "ventas",
+						"type": "DatasetReference"
+					},
+					"name": "source4"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "tablaProducto",
+						"type": "DatasetReference"
+					},
+					"name": "sink1"
+				}
+			],
+			"transformations": [
+				{
+					"name": "select1"
+				},
+				{
+					"name": "alterRow1"
+				},
+				{
+					"name": "derivedColumn1"
+				},
+				{
+					"name": "filter1"
+				},
+				{
+					"name": "lookup1"
+				},
+				{
+					"name": "union1"
+				},
+				{
+					"name": "select2"
+				},
+				{
+					"name": "aggregate1"
+				},
+				{
+					"name": "select3"
+				},
+				{
+					"name": "select4"
+				},
+				{
+					"name": "lookup2"
+				},
+				{
+					"name": "derivedColumn2"
+				},
+				{
+					"name": "derivedColumn3"
+				},
+				{
+					"name": "select5"
+				},
+				{
+					"name": "derivedColumn4"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          baja as boolean,",
+				"          id as integer,",
+				"          codigo as string,",
+				"          nombre as string,",
+				"          fecha_alta as string,",
+				"          fecha_modificado as string,",
+				"          descripcion_corta as string,",
+				"          descripcion_larga as string,",
+				"          stock as integer,",
+				"          precio as double,",
+				"          impuesto as double,",
+				"          id_moneda as integer,",
+				"          tipo as (id as integer, nombre as string),",
+				"          marca as (id as integer, nombre as string),",
+				"          unidad_de_medida as (id as integer, nombre as string, decimales as integer),",
+				"          variedades as (id as integer, nombre as string, descripcion as string, fecha_modificado as string, precio as double, id_moneda as integer, atributos as (atributo as string, valor as string)[])[]",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false,",
+				"     documentForm: 'documentPerLine') ~> source1",
+				"source(output(",
+				"          articulo as integer,",
+				"          codigo as string,",
+				"          nombre as string,",
+				"          variedad as integer,",
+				"          estado as (id as integer, nombre as string, abreviacion as string),",
+				"          cantidad as double,",
+				"          modificado_articulo as string,",
+				"          modificado_stock as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false,",
+				"     documentForm: 'documentPerLine') ~> source2",
+				"source(output(",
+				"          articulo as integer,",
+				"          codigo as string,",
+				"          nombre as string,",
+				"          variedad as integer,",
+				"          estado as (id as integer, nombre as string, abreviacion as string),",
+				"          cantidad as double,",
+				"          modificado_articulo as string,",
+				"          modificado_stock as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false,",
+				"     documentForm: 'documentPerLine') ~> source3",
+				"source(output(",
+				"          Fecha as string,",
+				"          Comprobante as string,",
+				"          Numero as string,",
+				"          SucNombre as string,",
+				"          Identificador as string,",
+				"          Contacto as string,",
+				"          ArtCodigo as string,",
+				"          ArtSKU as string,",
+				"          ArtNombre as string,",
+				"          ArtComentario as string,",
+				"          ArtCantidad as string,",
+				"          Moneda as string,",
+				"          ArtNetoFinal as string,",
+				"          ArtImpuesto1 as string,",
+				"          ArtTasaImp1 as string,",
+				"          ArtDescuento as string,",
+				"          ArtBrutoFinal as string,",
+				"          Vendedor as string,",
+				"          Comentario as string,",
+				"          Id as string,",
+				"          ContactoId as string,",
+				"          Estado as string,",
+				"          QDecimalesMoneda as string,",
+				"          FormatoMoneda as string,",
+				"          TotalComprobante as string,",
+				"          RedondeoComprobante as string,",
+				"          ArtId as string,",
+				"          AVaId as string,",
+				"          ArtCodigoBarras as string,",
+				"          UMeDecimales as string,",
+				"          ArtImpuesto2 as string,",
+				"          ArtTasaImp2 as string,",
+				"          ArtImpuesto3 as string,",
+				"          ArtTasaImp3 as string,",
+				"          ArtImpuesto4 as string,",
+				"          ArtTasaImp4 as string,",
+				"          ArtImpuesto5 as string,",
+				"          ArtTasaImp5 as string,",
+				"          ArtImpuesto6 as string,",
+				"          ArtTasaImp6 as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false) ~> source4",
+				"source1 select(mapColumn(",
+				"          baja,",
+				"          id,",
+				"          codigo,",
+				"          nombre,",
+				"          fecha_alta,",
+				"          fecha_modificado,",
+				"          descripcion_corta,",
+				"          descripcion_larga,",
+				"          precio_base = precio,",
+				"          id_moneda,",
+				"          id_tipo_producto = tipo.id,",
+				"          id_marca = marca.id,",
+				"          unidad_medida_nombre = unidad_de_medida.nombre",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> select1",
+				"select5 alterRow(upsertIf(true())) ~> alterRow1",
+				"select1 derive(fecha_alta = iif(  isNull(toTimestamp(fecha_alta, 'yyyy-MM-dd\\'T\\'HH:mm:ss.SSS')),   toTimestamp(fecha_alta, 'yyyy-MM-dd\\'T\\'HH:mm:ss'),   toTimestamp(fecha_alta, 'yyyy-MM-dd\\'T\\'HH:mm:ss.SSS')),",
+				"          fecha_modificado = iif(  isNull(toTimestamp(fecha_modificado, 'yyyy-MM-dd\\'T\\'HH:mm:ss.SSS')),   toTimestamp(fecha_modificado, 'yyyy-MM-dd\\'T\\'HH:mm:ss'),   toTimestamp(fecha_modificado, 'yyyy-MM-dd\\'T\\'HH:mm:ss.SSS')),",
+				"          precio_base = toDecimal(precio_base)) ~> derivedColumn1",
+				"alterRow1 filter(!isNull(codigo)) ~> filter1",
+				"derivedColumn1, select2 lookup(id == id_prod,",
+				"     multiple: false,",
+				"     pickup: 'any',",
+				"     broadcast: 'auto')~> lookup1",
+				"source3, source2 union(byName: true)~> union1",
+				"aggregate1 select(mapColumn(",
+				"          id_prod = articulo,",
+				"          nombre_prod = nombre",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> select2",
+				"union1 aggregate(groupBy(articulo),",
+				"     nombre = first(nombre)) ~> aggregate1",
+				"derivedColumn4 select(mapColumn(",
+				"          baja,",
+				"          id,",
+				"          codigo,",
+				"          fecha_alta,",
+				"          fecha_modificado,",
+				"          descripcion_corta,",
+				"          descripcion_larga,",
+				"          precio_base,",
+				"          id_moneda,",
+				"          id_tipo_producto,",
+				"          id_marca,",
+				"          unidad_medida_nombre,",
+				"          nombre",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> select3",
+				"source4 select(mapColumn(",
+				"          ArtNombre,",
+				"          ArtId",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> select4",
+				"select3, derivedColumn2 lookup(id == ArtId,",
+				"     multiple: false,",
+				"     pickup: 'any',",
+				"     broadcast: 'auto')~> lookup2",
+				"select4 derive(ArtId = toInteger(ArtId)) ~> derivedColumn2",
+				"lookup2 derive(nombre = iif(isNull(nombre), ArtNombre, nombre)) ~> derivedColumn3",
+				"derivedColumn3 select(mapColumn(",
+				"          baja,",
+				"          id,",
+				"          codigo,",
+				"          fecha_alta,",
+				"          fecha_modificado,",
+				"          descripcion_corta,",
+				"          descripcion_larga,",
+				"          precio_base,",
+				"          id_moneda,",
+				"          id_tipo_producto,",
+				"          id_marca,",
+				"          unidad_medida_nombre,",
+				"          nombre",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> select5",
+				"lookup1 derive(nombre = iif(isNull(nombre), nombre_prod, nombre)) ~> derivedColumn4",
+				"filter1 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     input(",
+				"          id as integer,",
+				"          codigo as string,",
+				"          nombre as string,",
+				"          descripcion_corta as string,",
+				"          descripcion_larga as string,",
+				"          fecha_alta as timestamp,",
+				"          fecha_modificado as timestamp,",
+				"          baja as boolean,",
+				"          precio_base as decimal(18,4),",
+				"          id_moneda as integer,",
+				"          id_tipo_producto as integer,",
+				"          id_marca as integer,",
+				"          unidad_medida_nombre as string",
+				"     ),",
+				"     deletable:false,",
+				"     insertable:false,",
+				"     updateable:false,",
+				"     upsertable:true,",
+				"     keys:['id'],",
+				"     format: 'table',",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     errorHandlingOption: 'stopOnFirstError') ~> sink1"
+			]
+		}
+	}
+}

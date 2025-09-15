@@ -1,0 +1,48 @@
+{
+	"name": "tablaMoneda",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "db",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "dbo"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "id",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "nombre",
+				"type": "nvarchar"
+			},
+			{
+				"name": "simbolo",
+				"type": "nvarchar"
+			},
+			{
+				"name": "codigo_internacional",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "codigo_iso4217",
+				"type": "nvarchar"
+			},
+			{
+				"name": "decimales",
+				"type": "int",
+				"precision": 10
+			}
+		],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "moneda"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

@@ -1,0 +1,97 @@
+{
+	"name": "UpdateCotizacion",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "cotizacion",
+						"type": "DatasetReference"
+					},
+					"name": "source1"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "tablaCotizacion",
+						"type": "DatasetReference"
+					},
+					"name": "sink1"
+				}
+			],
+			"transformations": [
+				{
+					"name": "select1"
+				},
+				{
+					"name": "derivedColumn1"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          CDiFecha as string,",
+				"          CDiTipoCotizacion as string,",
+				"          CDiMoneda as string,",
+				"          CDiCotizaEn as string,",
+				"          CDiCompra as string,",
+				"          CDiVenta as string,",
+				"          CDiDivisaDe as string,",
+				"          CDiDivisaA as string,",
+				"          M1 as string,",
+				"          M2 as string,",
+				"          TCMNombre as string,",
+				"          FMT as string,",
+				"          Redondeo as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false) ~> source1",
+				"source1 select(mapColumn(",
+				"          fecha = CDiFecha,",
+				"          id_moneda_origen = CDiMoneda,",
+				"          id_moneda_destino = CDiCotizaEn,",
+				"          valor_compra = CDiCompra,",
+				"          valor_venta = CDiVenta,",
+				"          Redondeo",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> select1",
+				"select1 derive(fecha = toTimestamp(fecha, 'yyyy-MM-dd\\'T\\'HH:mm:ss'),",
+				"          id_moneda_origen = toInteger(id_moneda_origen),",
+				"          id_moneda_destino = toInteger(id_moneda_destino),",
+				"          valor_compra = toDecimal(valor_compra, 18, 6),",
+				"          valor_venta = toDecimal(valor_venta, 18, 6),",
+				"          Redondeo = toInteger(Redondeo)) ~> derivedColumn1",
+				"derivedColumn1 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     input(",
+				"          id as integer,",
+				"          fecha as timestamp,",
+				"          id_moneda_origen as integer,",
+				"          id_moneda_destino as integer,",
+				"          valor_compra as decimal(18,6),",
+				"          valor_venta as decimal(18,6),",
+				"          redondeo as integer",
+				"     ),",
+				"     deletable:false,",
+				"     insertable:true,",
+				"     updateable:false,",
+				"     upsertable:false,",
+				"     format: 'table',",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     errorHandlingOption: 'stopOnFirstError',",
+				"     mapColumn(",
+				"          fecha,",
+				"          id_moneda_origen,",
+				"          id_moneda_destino,",
+				"          valor_compra,",
+				"          valor_venta,",
+				"          redondeo = Redondeo",
+				"     )) ~> sink1"
+			]
+		}
+	}
+}

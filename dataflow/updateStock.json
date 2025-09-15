@@ -1,0 +1,146 @@
+{
+	"name": "updateStock",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "suc1stock",
+						"type": "DatasetReference"
+					},
+					"name": "suc1"
+				},
+				{
+					"dataset": {
+						"referenceName": "suc11stock",
+						"type": "DatasetReference"
+					},
+					"name": "suc11"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "tablaStock",
+						"type": "DatasetReference"
+					},
+					"name": "sink1"
+				}
+			],
+			"transformations": [
+				{
+					"name": "derivedColumn1"
+				},
+				{
+					"name": "derivedColumn2"
+				},
+				{
+					"name": "select1"
+				},
+				{
+					"name": "select2"
+				},
+				{
+					"name": "union1"
+				},
+				{
+					"name": "derivedColumn3"
+				},
+				{
+					"name": "alterRow1"
+				},
+				{
+					"name": "select3"
+				},
+				{
+					"name": "filter1"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          articulo as integer,",
+				"          codigo as string,",
+				"          nombre as string,",
+				"          variedad as integer,",
+				"          estado as (id as integer, nombre as string, abreviacion as string),",
+				"          cantidad as double,",
+				"          modificado_articulo as string,",
+				"          modificado_stock as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false,",
+				"     documentForm: 'documentPerLine') ~> suc1",
+				"source(output(",
+				"          articulo as integer,",
+				"          codigo as string,",
+				"          nombre as string,",
+				"          variedad as integer,",
+				"          estado as (id as integer, nombre as string, abreviacion as string),",
+				"          cantidad as double,",
+				"          modificado_articulo as string,",
+				"          modificado_stock as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false,",
+				"     documentForm: 'documentPerLine') ~> suc11",
+				"suc1 derive(id_sucursal = 1,",
+				"          articulo = toInteger(articulo)) ~> derivedColumn1",
+				"suc11 derive(id_sucursal = 11,",
+				"          articulo = toInteger(articulo)) ~> derivedColumn2",
+				"derivedColumn2 select(mapColumn(",
+				"          id_variedad = variedad,",
+				"          id_sucursal,",
+				"          cantidad,",
+				"          fecha_modificado = modificado_stock,",
+				"          id_producto = articulo",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> select1",
+				"derivedColumn1 select(mapColumn(",
+				"          id_variedad = variedad,",
+				"          id_sucursal,",
+				"          cantidad,",
+				"          fecha_modificado = modificado_stock,",
+				"          id_producto = articulo",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> select2",
+				"select2, select1 union(byName: true)~> union1",
+				"union1 derive(fecha_modificado = toTimestamp(fecha_modificado, 'yyyy-MM-dd\\'T\\'HH:mm:ss'),",
+				"          cantidad = toDecimal(cantidad)) ~> derivedColumn3",
+				"select3 alterRow(upsertIf(true())) ~> alterRow1",
+				"filter1 select(mapColumn(",
+				"          id_variedad,",
+				"          id_sucursal,",
+				"          cantidad,",
+				"          fecha_modificado,",
+				"          id_producto",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> select3",
+				"derivedColumn3 filter(!isNull(id_variedad)) ~> filter1",
+				"alterRow1 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     input(",
+				"          id_producto as integer,",
+				"          id_variedad as integer,",
+				"          id_sucursal as integer,",
+				"          cantidad as decimal(18,2),",
+				"          fecha_modificado as timestamp",
+				"     ),",
+				"     deletable:false,",
+				"     insertable:false,",
+				"     updateable:false,",
+				"     upsertable:true,",
+				"     keys:['id_variedad','id_sucursal','id_producto'],",
+				"     format: 'table',",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     errorHandlingOption: 'stopOnFirstError') ~> sink1"
+			]
+		}
+	}
+}

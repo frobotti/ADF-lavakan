@@ -1,0 +1,87 @@
+{
+	"name": "tablaCliente",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "db",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "dbo"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "id",
+				"type": "bigint",
+				"precision": 19
+			},
+			{
+				"name": "tipo",
+				"type": "text"
+			},
+			{
+				"name": "mostrar_como",
+				"type": "text"
+			},
+			{
+				"name": "nombres",
+				"type": "text"
+			},
+			{
+				"name": "apellidos",
+				"type": "text"
+			},
+			{
+				"name": "identificador1",
+				"type": "text"
+			},
+			{
+				"name": "identificador2",
+				"type": "text"
+			},
+			{
+				"name": "categoria_id",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "localidad",
+				"type": "text"
+			},
+			{
+				"name": "departamento",
+				"type": "text"
+			},
+			{
+				"name": "pais",
+				"type": "text"
+			},
+			{
+				"name": "telefono1",
+				"type": "text"
+			},
+			{
+				"name": "telefono2",
+				"type": "text"
+			},
+			{
+				"name": "email1",
+				"type": "text"
+			},
+			{
+				"name": "email2",
+				"type": "text"
+			},
+			{
+				"name": "aniversario",
+				"type": "date"
+			}
+		],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "cliente"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

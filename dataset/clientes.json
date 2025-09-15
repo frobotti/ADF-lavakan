@@ -1,0 +1,98 @@
+{
+	"name": "clientes",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "BlobStorage",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "blobEntrante"
+		},
+		"annotations": [],
+		"type": "Json",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"fileName": "clientes",
+				"container": "lavakan"
+			}
+		},
+		"schema": {
+			"type": "object",
+			"properties": {
+				"id": {
+					"type": "integer"
+				},
+				"tipo": {
+					"type": "string"
+				},
+				"mostrar_como": {
+					"type": "string"
+				},
+				"nombres": {
+					"type": "string"
+				},
+				"apellidos": {
+					"type": "string"
+				},
+				"identificador1": {
+					"type": "null"
+				},
+				"identificador2": {
+					"type": "null"
+				},
+				"categoria": {
+					"type": "object",
+					"properties": {
+						"id": {
+							"type": "string"
+						},
+						"nombre": {
+							"type": "string"
+						},
+						"lista_precios": {
+							"type": "integer"
+						}
+					}
+				},
+				"direccion": {
+					"type": "string"
+				},
+				"localidad": {
+					"type": "string"
+				},
+				"departamento": {
+					"type": "string"
+				},
+				"pais": {
+					"type": "string"
+				},
+				"telefono1": {
+					"type": "string"
+				},
+				"telefono2": {
+					"type": "string"
+				},
+				"email1": {
+					"type": "string"
+				},
+				"email2": {
+					"type": "null"
+				},
+				"comentario": {
+					"type": "null"
+				},
+				"ramo_ocupacion": {
+					"type": "null"
+				},
+				"pagina_web": {
+					"type": "null"
+				},
+				"aniversario": {
+					"type": "string"
+				}
+			}
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

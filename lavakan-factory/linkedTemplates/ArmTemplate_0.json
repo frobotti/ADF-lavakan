@@ -646,7 +646,7 @@
 					"type": "LinkedServiceReference"
 				},
 				"folder": {
-					"name": "dbo"
+					"name": "dbo/data"
 				},
 				"annotations": [],
 				"type": "AzureSqlTable",
@@ -685,7 +685,7 @@
 					"type": "LinkedServiceReference"
 				},
 				"folder": {
-					"name": "dbo"
+					"name": "dbo/data"
 				},
 				"annotations": [],
 				"type": "AzureSqlTable",
@@ -776,7 +776,7 @@
 					"type": "LinkedServiceReference"
 				},
 				"folder": {
-					"name": "dbo"
+					"name": "dbo/data"
 				},
 				"annotations": [],
 				"type": "AzureSqlTable",
@@ -839,7 +839,7 @@
 					"type": "LinkedServiceReference"
 				},
 				"folder": {
-					"name": "dbo"
+					"name": "dbo/data"
 				},
 				"annotations": [],
 				"type": "AzureSqlTable",
@@ -879,7 +879,7 @@
 					"type": "LinkedServiceReference"
 				},
 				"folder": {
-					"name": "dbo"
+					"name": "dbo/data"
 				},
 				"annotations": [],
 				"type": "AzureSqlTable",
@@ -931,7 +931,7 @@
 					"type": "LinkedServiceReference"
 				},
 				"folder": {
-					"name": "dbo"
+					"name": "dbo/data"
 				},
 				"annotations": [],
 				"type": "AzureSqlTable",
@@ -1018,7 +1018,7 @@
 					"type": "LinkedServiceReference"
 				},
 				"folder": {
-					"name": "dbo"
+					"name": "dbo/data"
 				},
 				"annotations": [],
 				"type": "AzureSqlTable",
@@ -1070,7 +1070,7 @@
 					"type": "LinkedServiceReference"
 				},
 				"folder": {
-					"name": "dbo"
+					"name": "dbo/data"
 				},
 				"annotations": [],
 				"type": "AzureSqlTable",
@@ -1104,7 +1104,7 @@
 					"type": "LinkedServiceReference"
 				},
 				"folder": {
-					"name": "dbo"
+					"name": "dbo/data"
 				},
 				"annotations": [],
 				"type": "AzureSqlTable",
@@ -1149,7 +1149,7 @@
 					"type": "LinkedServiceReference"
 				},
 				"folder": {
-					"name": "dbo"
+					"name": "dbo/data"
 				},
 				"annotations": [],
 				"type": "AzureSqlTable",

@@ -68,9 +68,9 @@
 								}
 							},
 							"staging": {},
-							"integrationRuntime": {
-								"referenceName": "integrationRuntime-central-us",
-								"type": "IntegrationRuntimeReference"
+							"compute": {
+								"coreCount": 8,
+								"computeType": "General"
 							},
 							"traceLevel": "Fine"
 						}
@@ -105,9 +105,9 @@
 								}
 							},
 							"staging": {},
-							"integrationRuntime": {
-								"referenceName": "integrationRuntime-central-us",
-								"type": "IntegrationRuntimeReference"
+							"compute": {
+								"coreCount": 8,
+								"computeType": "General"
 							},
 							"traceLevel": "Fine"
 						}
@@ -142,9 +142,9 @@
 								}
 							},
 							"staging": {},
-							"integrationRuntime": {
-								"referenceName": "integrationRuntime-central-us",
-								"type": "IntegrationRuntimeReference"
+							"compute": {
+								"coreCount": 8,
+								"computeType": "General"
 							},
 							"traceLevel": "Fine"
 						}
@@ -179,9 +179,9 @@
 								}
 							},
 							"staging": {},
-							"integrationRuntime": {
-								"referenceName": "integrationRuntime-central-us",
-								"type": "IntegrationRuntimeReference"
+							"compute": {
+								"coreCount": 8,
+								"computeType": "General"
 							},
 							"traceLevel": "Fine"
 						}
@@ -216,9 +216,9 @@
 								}
 							},
 							"staging": {},
-							"integrationRuntime": {
-								"referenceName": "integrationRuntime-central-us",
-								"type": "IntegrationRuntimeReference"
+							"compute": {
+								"coreCount": 8,
+								"computeType": "General"
 							},
 							"traceLevel": "Fine"
 						}
@@ -256,9 +256,9 @@
 								}
 							},
 							"staging": {},
-							"integrationRuntime": {
-								"referenceName": "integrationRuntime-central-us",
-								"type": "IntegrationRuntimeReference"
+							"compute": {
+								"coreCount": 8,
+								"computeType": "General"
 							},
 							"traceLevel": "Fine"
 						}
@@ -294,9 +294,9 @@
 								}
 							},
 							"staging": {},
-							"integrationRuntime": {
-								"referenceName": "integrationRuntime-central-us",
-								"type": "IntegrationRuntimeReference"
+							"compute": {
+								"coreCount": 8,
+								"computeType": "General"
 							},
 							"traceLevel": "Fine"
 						}
@@ -342,9 +342,9 @@
 								}
 							},
 							"staging": {},
-							"integrationRuntime": {
-								"referenceName": "integrationRuntime-central-us",
-								"type": "IntegrationRuntimeReference"
+							"compute": {
+								"coreCount": 8,
+								"computeType": "General"
 							},
 							"traceLevel": "Fine"
 						}
@@ -412,9 +412,9 @@
 								}
 							},
 							"staging": {},
-							"integrationRuntime": {
-								"referenceName": "integrationRuntime-central-us",
-								"type": "IntegrationRuntimeReference"
+							"compute": {
+								"coreCount": 8,
+								"computeType": "General"
 							},
 							"traceLevel": "Fine"
 						}
@@ -449,9 +449,9 @@
 								}
 							},
 							"staging": {},
-							"integrationRuntime": {
-								"referenceName": "integrationRuntime-central-us",
-								"type": "IntegrationRuntimeReference"
+							"compute": {
+								"coreCount": 8,
+								"computeType": "General"
 							},
 							"traceLevel": "Fine"
 						}
@@ -519,9 +519,9 @@
 								}
 							},
 							"staging": {},
-							"integrationRuntime": {
-								"referenceName": "integrationRuntime-central-us",
-								"type": "IntegrationRuntimeReference"
+							"compute": {
+								"coreCount": 8,
+								"computeType": "General"
 							},
 							"traceLevel": "Fine"
 						}
@@ -530,12 +530,14 @@
 				"policy": {
 					"elapsedTimeMetric": {}
 				},
+				"folder": {
+					"name": "pipeline"
+				},
 				"annotations": [],
 				"lastPublishTime": "2025-09-10T16:05:31Z"
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/dataflows/updateTipoProducto')]",
-				"[concat(variables('factoryId'), '/integrationRuntimes/integrationRuntime-central-us')]",
 				"[concat(variables('factoryId'), '/dataflows/updateMarca')]",
 				"[concat(variables('factoryId'), '/dataflows/updateMoneda')]",
 				"[concat(variables('factoryId'), '/dataflows/updateCategoriaCliente')]",
@@ -569,20 +571,18 @@
 						"userProperties": [],
 						"typeProperties": {
 							"dataflow": {
-								"referenceName": "updateVentas",
+								"referenceName": "updateMarca",
 								"type": "DataFlowReference",
 								"parameters": {},
 								"datasetParameters": {
-									"source1": {},
-									"source2": {},
-									"source3": {},
-									"sink1": {}
+									"marca": {},
+									"dbMarca": {}
 								}
 							},
 							"staging": {},
-							"integrationRuntime": {
-								"referenceName": "integrationRuntime-central-us",
-								"type": "IntegrationRuntimeReference"
+							"compute": {
+								"coreCount": 8,
+								"computeType": "General"
 							},
 							"traceLevel": "Coarse"
 						}
@@ -591,12 +591,14 @@
 				"policy": {
 					"elapsedTimeMetric": {}
 				},
+				"folder": {
+					"name": "pipeline"
+				},
 				"annotations": [],
 				"lastPublishTime": "2025-09-10T17:19:23Z"
 			},
 			"dependsOn": [
-				"[concat(variables('factoryId'), '/dataflows/updateVentas')]",
-				"[concat(variables('factoryId'), '/integrationRuntimes/integrationRuntime-central-us')]"
+				"[concat(variables('factoryId'), '/dataflows/updateMarca')]"
 			]
 		},
 		{
@@ -1157,7 +1159,7 @@
 					"type": "LinkedServiceReference"
 				},
 				"folder": {
-					"name": "dbo"
+					"name": "dbo/data"
 				},
 				"annotations": [],
 				"type": "AzureSqlTable",
@@ -1196,7 +1198,7 @@
 					"type": "LinkedServiceReference"
 				},
 				"folder": {
-					"name": "dbo"
+					"name": "dbo/data"
 				},
 				"annotations": [],
 				"type": "AzureSqlTable",
@@ -1287,7 +1289,7 @@
 					"type": "LinkedServiceReference"
 				},
 				"folder": {
-					"name": "dbo"
+					"name": "dbo/data"
 				},
 				"annotations": [],
 				"type": "AzureSqlTable",
@@ -1350,7 +1352,7 @@
 					"type": "LinkedServiceReference"
 				},
 				"folder": {
-					"name": "dbo"
+					"name": "dbo/data"
 				},
 				"annotations": [],
 				"type": "AzureSqlTable",
@@ -1390,7 +1392,7 @@
 					"type": "LinkedServiceReference"
 				},
 				"folder": {
-					"name": "dbo"
+					"name": "dbo/data"
 				},
 				"annotations": [],
 				"type": "AzureSqlTable",
@@ -1442,7 +1444,7 @@
 					"type": "LinkedServiceReference"
 				},
 				"folder": {
-					"name": "dbo"
+					"name": "dbo/data"
 				},
 				"annotations": [],
 				"type": "AzureSqlTable",
@@ -1529,7 +1531,7 @@
 					"type": "LinkedServiceReference"
 				},
 				"folder": {
-					"name": "dbo"
+					"name": "dbo/data"
 				},
 				"annotations": [],
 				"type": "AzureSqlTable",
@@ -1581,7 +1583,7 @@
 					"type": "LinkedServiceReference"
 				},
 				"folder": {
-					"name": "dbo"
+					"name": "dbo/data"
 				},
 				"annotations": [],
 				"type": "AzureSqlTable",
@@ -1615,7 +1617,7 @@
 					"type": "LinkedServiceReference"
 				},
 				"folder": {
-					"name": "dbo"
+					"name": "dbo/data"
 				},
 				"annotations": [],
 				"type": "AzureSqlTable",
@@ -1660,7 +1662,7 @@
 					"type": "LinkedServiceReference"
 				},
 				"folder": {
-					"name": "dbo"
+					"name": "dbo/data"
 				},
 				"annotations": [],
 				"type": "AzureSqlTable",
@@ -1720,7 +1722,7 @@
 					"type": "LinkedServiceReference"
 				},
 				"folder": {
-					"name": "dbo"
+					"name": "dbo/data"
 				},
 				"annotations": [],
 				"type": "AzureSqlTable",
@@ -2077,7 +2079,7 @@
 					"type": "LinkedServiceReference"
 				},
 				"folder": {
-					"name": "dbo"
+					"name": "dbo/data"
 				},
 				"annotations": [],
 				"type": "AzureSqlTable",
@@ -2430,6 +2432,9 @@
 			"type": "Microsoft.DataFactory/factories/dataflows",
 			"apiVersion": "2018-06-01",
 			"properties": {
+				"folder": {
+					"name": "data"
+				},
 				"type": "MappingDataFlow",
 				"typeProperties": {
 					"sources": [
@@ -2533,6 +2538,9 @@
 			"type": "Microsoft.DataFactory/factories/dataflows",
 			"apiVersion": "2018-06-01",
 			"properties": {
+				"folder": {
+					"name": "data"
+				},
 				"type": "MappingDataFlow",
 				"typeProperties": {
 					"sources": [
@@ -2636,6 +2644,9 @@
 			"type": "Microsoft.DataFactory/factories/dataflows",
 			"apiVersion": "2018-06-01",
 			"properties": {
+				"folder": {
+					"name": "data"
+				},
 				"type": "MappingDataFlow",
 				"typeProperties": {
 					"sources": [
@@ -2778,6 +2789,9 @@
 			"type": "Microsoft.DataFactory/factories/dataflows",
 			"apiVersion": "2018-06-01",
 			"properties": {
+				"folder": {
+					"name": "data"
+				},
 				"type": "MappingDataFlow",
 				"typeProperties": {
 					"sources": [
@@ -2851,6 +2865,9 @@
 			"type": "Microsoft.DataFactory/factories/dataflows",
 			"apiVersion": "2018-06-01",
 			"properties": {
+				"folder": {
+					"name": "data"
+				},
 				"type": "MappingDataFlow",
 				"typeProperties": {
 					"sources": [
@@ -2922,6 +2939,9 @@
 			"type": "Microsoft.DataFactory/factories/dataflows",
 			"apiVersion": "2018-06-01",
 			"properties": {
+				"folder": {
+					"name": "data"
+				},
 				"type": "MappingDataFlow",
 				"typeProperties": {
 					"sources": [
@@ -3230,6 +3250,9 @@
 			"type": "Microsoft.DataFactory/factories/dataflows",
 			"apiVersion": "2018-06-01",
 			"properties": {
+				"folder": {
+					"name": "data"
+				},
 				"type": "MappingDataFlow",
 				"typeProperties": {
 					"sources": [
@@ -3383,6 +3406,9 @@
 			"type": "Microsoft.DataFactory/factories/dataflows",
 			"apiVersion": "2018-06-01",
 			"properties": {
+				"folder": {
+					"name": "data"
+				},
 				"type": "MappingDataFlow",
 				"typeProperties": {
 					"sources": [
@@ -3550,6 +3576,9 @@
 			"type": "Microsoft.DataFactory/factories/dataflows",
 			"apiVersion": "2018-06-01",
 			"properties": {
+				"folder": {
+					"name": "data"
+				},
 				"type": "MappingDataFlow",
 				"typeProperties": {
 					"sources": [
@@ -3679,6 +3708,9 @@
 			"type": "Microsoft.DataFactory/factories/dataflows",
 			"apiVersion": "2018-06-01",
 			"properties": {
+				"folder": {
+					"name": "data"
+				},
 				"type": "MappingDataFlow",
 				"typeProperties": {
 					"sources": [
@@ -3940,6 +3972,9 @@
 			"type": "Microsoft.DataFactory/factories/dataflows",
 			"apiVersion": "2018-06-01",
 			"properties": {
+				"folder": {
+					"name": "data"
+				},
 				"type": "MappingDataFlow",
 				"typeProperties": {
 					"sources": [

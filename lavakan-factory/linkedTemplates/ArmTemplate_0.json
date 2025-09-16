@@ -1,0 +1,1203 @@
+{
+	"$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"factoryName": {
+			"type": "string",
+			"metadata": "Data Factory name",
+			"defaultValue": "lavakan-factory"
+		},
+		"BlobStorage_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'BlobStorage'"
+		},
+		"db_password": {
+			"type": "secureString",
+			"metadata": "Secure string for 'password' of 'db'"
+		},
+		"db_properties_typeProperties_server": {
+			"type": "string",
+			"defaultValue": "sql-lavakan.database.windows.net"
+		},
+		"db_properties_typeProperties_database": {
+			"type": "string",
+			"defaultValue": "lavakan"
+		},
+		"db_properties_typeProperties_userName": {
+			"type": "string",
+			"defaultValue": "adminuser"
+		}
+	},
+	"variables": {
+		"factoryId": "[concat('Microsoft.DataFactory/factories/', parameters('factoryName'))]"
+	},
+	"resources": [
+		{
+			"name": "[concat(parameters('factoryName'), '/BlobStorage')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "AzureBlobStorage",
+				"typeProperties": {
+					"connectionString": "[parameters('BlobStorage_connectionString')]"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/db')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "AzureSqlDatabase",
+				"typeProperties": {
+					"server": "[parameters('db_properties_typeProperties_server')]",
+					"database": "[parameters('db_properties_typeProperties_database')]",
+					"encrypt": "mandatory",
+					"trustServerCertificate": false,
+					"authenticationType": "SQL",
+					"userName": "[parameters('db_properties_typeProperties_userName')]",
+					"password": {
+						"type": "SecureString",
+						"value": "[parameters('db_password')]"
+					}
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/integrationRuntime-central-us')]",
+			"type": "Microsoft.DataFactory/factories/integrationRuntimes",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "Managed",
+				"typeProperties": {
+					"computeProperties": {
+						"location": "Central US",
+						"dataFlowProperties": {
+							"computeType": "General",
+							"coreCount": 8,
+							"timeToLive": 10,
+							"cleanup": false,
+							"customProperties": []
+						}
+					}
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/bands')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "BlobStorage",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "blobEntrante"
+				},
+				"annotations": [],
+				"type": "Json",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"fileName": "bands",
+						"container": "lavakan"
+					}
+				},
+				"schema": {
+					"type": "object",
+					"properties": {
+						"id": {
+							"type": "integer"
+						},
+						"nombre": {
+							"type": "string"
+						},
+						"fecha_modificado": {
+							"type": "string"
+						}
+					}
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/BlobStorage')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/clientes')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "BlobStorage",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "blobEntrante"
+				},
+				"annotations": [],
+				"type": "Json",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"fileName": "clientes",
+						"container": "lavakan"
+					}
+				},
+				"schema": {
+					"type": "object",
+					"properties": {
+						"id": {
+							"type": "integer"
+						},
+						"tipo": {
+							"type": "string"
+						},
+						"mostrar_como": {
+							"type": "string"
+						},
+						"nombres": {
+							"type": "string"
+						},
+						"apellidos": {
+							"type": "string"
+						},
+						"identificador1": {
+							"type": "null"
+						},
+						"identificador2": {
+							"type": "null"
+						},
+						"categoria": {
+							"type": "object",
+							"properties": {
+								"id": {
+									"type": "string"
+								},
+								"nombre": {
+									"type": "string"
+								},
+								"lista_precios": {
+									"type": "integer"
+								}
+							}
+						},
+						"direccion": {
+							"type": "string"
+						},
+						"localidad": {
+							"type": "string"
+						},
+						"departamento": {
+							"type": "string"
+						},
+						"pais": {
+							"type": "string"
+						},
+						"telefono1": {
+							"type": "string"
+						},
+						"telefono2": {
+							"type": "string"
+						},
+						"email1": {
+							"type": "string"
+						},
+						"email2": {
+							"type": "null"
+						},
+						"comentario": {
+							"type": "null"
+						},
+						"ramo_ocupacion": {
+							"type": "null"
+						},
+						"pagina_web": {
+							"type": "null"
+						},
+						"aniversario": {
+							"type": "string"
+						}
+					}
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/BlobStorage')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/cotizacion')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "BlobStorage",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "blobEntrante"
+				},
+				"annotations": [],
+				"type": "Excel",
+				"typeProperties": {
+					"sheetName": "Sheet1",
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"fileName": "cotizaciones.xlsx",
+						"container": "lavakan"
+					},
+					"firstRowAsHeader": true
+				},
+				"schema": [
+					{
+						"name": "CDiFecha",
+						"type": "String"
+					},
+					{
+						"name": "CDiTipoCotizacion",
+						"type": "String"
+					},
+					{
+						"name": "CDiMoneda",
+						"type": "String"
+					},
+					{
+						"name": "CDiCotizaEn",
+						"type": "String"
+					},
+					{
+						"name": "CDiCompra",
+						"type": "String"
+					},
+					{
+						"name": "CDiVenta",
+						"type": "String"
+					},
+					{
+						"name": "CDiDivisaDe",
+						"type": "String"
+					},
+					{
+						"name": "CDiDivisaA",
+						"type": "String"
+					},
+					{
+						"name": "M1",
+						"type": "String"
+					},
+					{
+						"name": "M2",
+						"type": "String"
+					},
+					{
+						"name": "TCMNombre",
+						"type": "String"
+					},
+					{
+						"name": "FMT",
+						"type": "String"
+					},
+					{
+						"name": "Redondeo",
+						"type": "String"
+					}
+				]
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/BlobStorage')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/currency')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "BlobStorage",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "blobEntrante"
+				},
+				"annotations": [],
+				"type": "Json",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"fileName": "currency",
+						"container": "lavakan"
+					}
+				},
+				"schema": {
+					"type": "object",
+					"properties": {
+						"id": {
+							"type": "integer"
+						},
+						"nombre": {
+							"type": "string"
+						},
+						"simbolo": {
+							"type": "string"
+						},
+						"codigo_internacional": {
+							"type": "integer"
+						},
+						"codigo_ISO4217": {
+							"type": "string"
+						},
+						"decimales": {
+							"type": "integer"
+						}
+					}
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/BlobStorage')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/productos')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "BlobStorage",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "blobEntrante"
+				},
+				"annotations": [],
+				"type": "Json",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"fileName": "allProducts",
+						"container": "lavakan"
+					}
+				},
+				"schema": {
+					"type": "object",
+					"properties": {
+						"baja": {
+							"type": "boolean"
+						},
+						"id": {
+							"type": "integer"
+						},
+						"codigo": {
+							"type": "string"
+						},
+						"nombre": {
+							"type": "string"
+						},
+						"fecha_alta": {
+							"type": "string"
+						},
+						"fecha_modificado": {
+							"type": "string"
+						},
+						"descripcion_corta": {
+							"type": "string"
+						},
+						"descripcion_larga": {
+							"type": "string"
+						},
+						"stock": {
+							"type": "integer"
+						},
+						"precio": {
+							"type": "number"
+						},
+						"impuesto": {
+							"type": "number"
+						},
+						"id_moneda": {
+							"type": "integer"
+						},
+						"tipo": {
+							"type": "object",
+							"properties": {
+								"id": {
+									"type": "integer"
+								},
+								"nombre": {
+									"type": "string"
+								}
+							}
+						},
+						"marca": {
+							"type": "object",
+							"properties": {
+								"id": {
+									"type": "integer"
+								},
+								"nombre": {
+									"type": "string"
+								}
+							}
+						},
+						"unidad_de_medida": {
+							"type": "object",
+							"properties": {
+								"id": {
+									"type": "integer"
+								},
+								"nombre": {
+									"type": "string"
+								},
+								"decimales": {
+									"type": "integer"
+								}
+							}
+						},
+						"variedades": {
+							"type": "array",
+							"items": {
+								"type": "object",
+								"properties": {
+									"id": {
+										"type": "integer"
+									},
+									"nombre": {
+										"type": "string"
+									},
+									"descripcion": {
+										"type": "string"
+									},
+									"fecha_modificado": {
+										"type": "string"
+									},
+									"precio": {
+										"type": "number"
+									},
+									"id_moneda": {
+										"type": "integer"
+									},
+									"atributos": {
+										"type": "array",
+										"items": {
+											"type": "object",
+											"properties": {
+												"atributo": {
+													"type": "string"
+												},
+												"valor": {
+													"type": "string"
+												}
+											}
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/BlobStorage')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/suc11stock')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "BlobStorage",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "blobEntrante"
+				},
+				"annotations": [],
+				"type": "Json",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"fileName": "stock-suc-11",
+						"container": "lavakan"
+					}
+				},
+				"schema": {
+					"type": "object",
+					"properties": {
+						"articulo": {
+							"type": "integer"
+						},
+						"codigo": {
+							"type": "string"
+						},
+						"nombre": {
+							"type": "string"
+						},
+						"variedad": {
+							"type": "integer"
+						},
+						"estado": {
+							"type": "object",
+							"properties": {
+								"id": {
+									"type": "integer"
+								},
+								"nombre": {
+									"type": "string"
+								},
+								"abreviacion": {
+									"type": "string"
+								}
+							}
+						},
+						"cantidad": {
+							"type": "number"
+						},
+						"modificado_articulo": {
+							"type": "string"
+						},
+						"modificado_stock": {
+							"type": "string"
+						}
+					}
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/BlobStorage')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/suc1stock')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "BlobStorage",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "blobEntrante"
+				},
+				"annotations": [],
+				"type": "Json",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"fileName": "stock-suc-1",
+						"container": "lavakan"
+					}
+				},
+				"schema": {
+					"type": "object",
+					"properties": {
+						"articulo": {
+							"type": "integer"
+						},
+						"codigo": {
+							"type": "string"
+						},
+						"nombre": {
+							"type": "string"
+						},
+						"variedad": {
+							"type": "integer"
+						},
+						"estado": {
+							"type": "object",
+							"properties": {
+								"id": {
+									"type": "integer"
+								},
+								"nombre": {
+									"type": "string"
+								},
+								"abreviacion": {
+									"type": "string"
+								}
+							}
+						},
+						"cantidad": {
+							"type": "number"
+						},
+						"modificado_articulo": {
+							"type": "string"
+						},
+						"modificado_stock": {
+							"type": "string"
+						}
+					}
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/BlobStorage')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/tablaCategoriaCliente')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "db",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "dbo"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [
+					{
+						"name": "id",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "nombre",
+						"type": "nvarchar"
+					},
+					{
+						"name": "lista_precios",
+						"type": "int",
+						"precision": 10
+					}
+				],
+				"typeProperties": {
+					"schema": "dbo",
+					"table": "categoria_cliente"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/db')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/tablaCliente')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "db",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "dbo"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [
+					{
+						"name": "id",
+						"type": "bigint",
+						"precision": 19
+					},
+					{
+						"name": "tipo",
+						"type": "text"
+					},
+					{
+						"name": "mostrar_como",
+						"type": "text"
+					},
+					{
+						"name": "nombres",
+						"type": "text"
+					},
+					{
+						"name": "apellidos",
+						"type": "text"
+					},
+					{
+						"name": "identificador1",
+						"type": "text"
+					},
+					{
+						"name": "identificador2",
+						"type": "text"
+					},
+					{
+						"name": "categoria_id",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "localidad",
+						"type": "text"
+					},
+					{
+						"name": "departamento",
+						"type": "text"
+					},
+					{
+						"name": "pais",
+						"type": "text"
+					},
+					{
+						"name": "telefono1",
+						"type": "text"
+					},
+					{
+						"name": "telefono2",
+						"type": "text"
+					},
+					{
+						"name": "email1",
+						"type": "text"
+					},
+					{
+						"name": "email2",
+						"type": "text"
+					},
+					{
+						"name": "aniversario",
+						"type": "date"
+					}
+				],
+				"typeProperties": {
+					"schema": "dbo",
+					"table": "cliente"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/db')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/tablaCotizacion')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "db",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "dbo"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [
+					{
+						"name": "id",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "fecha",
+						"type": "datetime",
+						"precision": 23,
+						"scale": 3
+					},
+					{
+						"name": "id_moneda_origen",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "id_moneda_destino",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "valor_compra",
+						"type": "decimal",
+						"precision": 18,
+						"scale": 6
+					},
+					{
+						"name": "valor_venta",
+						"type": "decimal",
+						"precision": 18,
+						"scale": 6
+					},
+					{
+						"name": "redondeo",
+						"type": "int",
+						"precision": 10
+					}
+				],
+				"typeProperties": {
+					"schema": "dbo",
+					"table": "cotizacion"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/db')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/tablaMarca')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "db",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "dbo"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [
+					{
+						"name": "id",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "nombre",
+						"type": "nvarchar"
+					},
+					{
+						"name": "fecha_modificado",
+						"type": "datetime",
+						"precision": 23,
+						"scale": 3
+					}
+				],
+				"typeProperties": {
+					"schema": "dbo",
+					"table": "marca"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/db')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/tablaMoneda')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "db",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "dbo"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [
+					{
+						"name": "id",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "nombre",
+						"type": "nvarchar"
+					},
+					{
+						"name": "simbolo",
+						"type": "nvarchar"
+					},
+					{
+						"name": "codigo_internacional",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "codigo_iso4217",
+						"type": "nvarchar"
+					},
+					{
+						"name": "decimales",
+						"type": "int",
+						"precision": 10
+					}
+				],
+				"typeProperties": {
+					"schema": "dbo",
+					"table": "moneda"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/db')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/tablaProducto')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "db",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "dbo"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [
+					{
+						"name": "id",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "codigo",
+						"type": "varchar"
+					},
+					{
+						"name": "nombre",
+						"type": "varchar"
+					},
+					{
+						"name": "descripcion_corta",
+						"type": "text"
+					},
+					{
+						"name": "descripcion_larga",
+						"type": "text"
+					},
+					{
+						"name": "fecha_alta",
+						"type": "datetime",
+						"precision": 23,
+						"scale": 3
+					},
+					{
+						"name": "fecha_modificado",
+						"type": "datetime",
+						"precision": 23,
+						"scale": 3
+					},
+					{
+						"name": "baja",
+						"type": "bit"
+					},
+					{
+						"name": "precio_base",
+						"type": "decimal",
+						"precision": 18,
+						"scale": 4
+					},
+					{
+						"name": "id_moneda",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "id_tipo_producto",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "id_marca",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "unidad_medida_nombre",
+						"type": "varchar"
+					}
+				],
+				"typeProperties": {
+					"schema": "dbo",
+					"table": "producto"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/db')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/tablaStock')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "db",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "dbo"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [
+					{
+						"name": "id_producto",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "id_variedad",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "id_sucursal",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "cantidad",
+						"type": "decimal",
+						"precision": 18,
+						"scale": 2
+					},
+					{
+						"name": "fecha_modificado",
+						"type": "datetime",
+						"precision": 23,
+						"scale": 3
+					}
+				],
+				"typeProperties": {
+					"schema": "dbo",
+					"table": "stock"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/db')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/tablaSucursal')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "db",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "dbo"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [
+					{
+						"name": "id",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "nombre",
+						"type": "varchar"
+					}
+				],
+				"typeProperties": {
+					"schema": "dbo",
+					"table": "sucursal"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/db')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/tablaTipoProducto')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "db",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "dbo"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [
+					{
+						"name": "id",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "nombre",
+						"type": "nvarchar"
+					},
+					{
+						"name": "fecha_modificado",
+						"type": "datetime",
+						"precision": 23,
+						"scale": 3
+					},
+					{
+						"name": "id_padre",
+						"type": "int",
+						"precision": 10
+					}
+				],
+				"typeProperties": {
+					"schema": "dbo",
+					"table": "tipo_producto"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/db')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/tablaVariedad')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "db",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "dbo"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [
+					{
+						"name": "id",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "id_producto",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "nombre",
+						"type": "varchar"
+					},
+					{
+						"name": "descripcion",
+						"type": "text"
+					},
+					{
+						"name": "fecha_modificado",
+						"type": "datetime",
+						"precision": 23,
+						"scale": 3
+					},
+					{
+						"name": "precio",
+						"type": "decimal",
+						"precision": 18,
+						"scale": 0
+					},
+					{
+						"name": "id_moneda",
+						"type": "int",
+						"precision": 10
+					}
+				],
+				"typeProperties": {
+					"schema": "dbo",
+					"table": "variedad"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/db')]"
+			]
+		}
+	]
+}

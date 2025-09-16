@@ -1,0 +1,4049 @@
+{
+	"$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"factoryName": {
+			"type": "string",
+			"metadata": "Data Factory name",
+			"defaultValue": "lavakan-factory"
+		},
+		"BlobStorage_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'BlobStorage'"
+		},
+		"db_password": {
+			"type": "secureString",
+			"metadata": "Secure string for 'password' of 'db'"
+		},
+		"db_properties_typeProperties_server": {
+			"type": "string",
+			"defaultValue": "sql-lavakan.database.windows.net"
+		},
+		"db_properties_typeProperties_database": {
+			"type": "string",
+			"defaultValue": "lavakan"
+		},
+		"db_properties_typeProperties_userName": {
+			"type": "string",
+			"defaultValue": "adminuser"
+		}
+	},
+	"variables": {
+		"factoryId": "[concat('Microsoft.DataFactory/factories/', parameters('factoryName'))]"
+	},
+	"resources": [
+		{
+			"name": "[concat(parameters('factoryName'), '/ActualizarDatosZureo')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "DF_updateTipoProducto",
+						"type": "ExecuteDataFlow",
+						"dependsOn": [
+							{
+								"activity": "DF_updateMarca",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataflow": {
+								"referenceName": "updateTipoProducto",
+								"type": "DataFlowReference",
+								"parameters": {},
+								"datasetParameters": {
+									"tipoProducto": {},
+									"dbTipoProducto": {}
+								}
+							},
+							"staging": {},
+							"integrationRuntime": {
+								"referenceName": "integrationRuntime-central-us",
+								"type": "IntegrationRuntimeReference"
+							},
+							"traceLevel": "Fine"
+						}
+					},
+					{
+						"name": "DF_updateMarca",
+						"type": "ExecuteDataFlow",
+						"dependsOn": [
+							{
+								"activity": "Wait1",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataflow": {
+								"referenceName": "updateMarca",
+								"type": "DataFlowReference",
+								"parameters": {},
+								"datasetParameters": {
+									"marca": {},
+									"dbMarca": {}
+								}
+							},
+							"staging": {},
+							"integrationRuntime": {
+								"referenceName": "integrationRuntime-central-us",
+								"type": "IntegrationRuntimeReference"
+							},
+							"traceLevel": "Fine"
+						}
+					},
+					{
+						"name": "DF_updateMoneda",
+						"type": "ExecuteDataFlow",
+						"dependsOn": [
+							{
+								"activity": "DF_updateTipoProducto",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataflow": {
+								"referenceName": "updateMoneda",
+								"type": "DataFlowReference",
+								"parameters": {},
+								"datasetParameters": {
+									"Moneda": {},
+									"dbMoneda": {}
+								}
+							},
+							"staging": {},
+							"integrationRuntime": {
+								"referenceName": "integrationRuntime-central-us",
+								"type": "IntegrationRuntimeReference"
+							},
+							"traceLevel": "Fine"
+						}
+					},
+					{
+						"name": "DF_updateCategoriaCliente",
+						"type": "ExecuteDataFlow",
+						"dependsOn": [
+							{
+								"activity": "DF_updateMoneda",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataflow": {
+								"referenceName": "updateCategoriaCliente",
+								"type": "DataFlowReference",
+								"parameters": {},
+								"datasetParameters": {
+									"source1": {},
+									"sink1": {}
+								}
+							},
+							"staging": {},
+							"integrationRuntime": {
+								"referenceName": "integrationRuntime-central-us",
+								"type": "IntegrationRuntimeReference"
+							},
+							"traceLevel": "Fine"
+						}
+					},
+					{
+						"name": "DF_updateCliente",
+						"type": "ExecuteDataFlow",
+						"dependsOn": [
+							{
+								"activity": "DF_updateCategoriaCliente",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataflow": {
+								"referenceName": "updateCliente",
+								"type": "DataFlowReference",
+								"parameters": {},
+								"datasetParameters": {
+									"source1": {},
+									"sink1": {}
+								}
+							},
+							"staging": {},
+							"integrationRuntime": {
+								"referenceName": "integrationRuntime-central-us",
+								"type": "IntegrationRuntimeReference"
+							},
+							"traceLevel": "Fine"
+						}
+					},
+					{
+						"name": "DF_updateProducto",
+						"type": "ExecuteDataFlow",
+						"dependsOn": [
+							{
+								"activity": "DF_updateStock",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataflow": {
+								"referenceName": "updateProducto",
+								"type": "DataFlowReference",
+								"parameters": {},
+								"datasetParameters": {
+									"source1": {},
+									"source2": {},
+									"source3": {},
+									"source4": {},
+									"sink1": {}
+								}
+							},
+							"staging": {},
+							"integrationRuntime": {
+								"referenceName": "integrationRuntime-central-us",
+								"type": "IntegrationRuntimeReference"
+							},
+							"traceLevel": "Fine"
+						}
+					},
+					{
+						"name": "DF_updateStock",
+						"type": "ExecuteDataFlow",
+						"dependsOn": [
+							{
+								"activity": "DF_updateCliente",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataflow": {
+								"referenceName": "updateStock",
+								"type": "DataFlowReference",
+								"parameters": {},
+								"datasetParameters": {
+									"suc1": {},
+									"suc11": {},
+									"sink1": {}
+								}
+							},
+							"staging": {},
+							"integrationRuntime": {
+								"referenceName": "integrationRuntime-central-us",
+								"type": "IntegrationRuntimeReference"
+							},
+							"traceLevel": "Fine"
+						}
+					},
+					{
+						"name": "Wait1",
+						"type": "Wait",
+						"dependsOn": [],
+						"userProperties": [],
+						"typeProperties": {
+							"waitTimeInSeconds": 1
+						}
+					},
+					{
+						"name": "DF_updateVenta",
+						"type": "ExecuteDataFlow",
+						"dependsOn": [
+							{
+								"activity": "truncate db",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataflow": {
+								"referenceName": "updateVentas",
+								"type": "DataFlowReference",
+								"parameters": {},
+								"datasetParameters": {
+									"source1": {},
+									"source2": {},
+									"source3": {},
+									"sink1": {}
+								}
+							},
+							"staging": {},
+							"integrationRuntime": {
+								"referenceName": "integrationRuntime-central-us",
+								"type": "IntegrationRuntimeReference"
+							},
+							"traceLevel": "Fine"
+						}
+					},
+					{
+						"name": "truncate db",
+						"type": "Script",
+						"dependsOn": [
+							{
+								"activity": "DF_updateProducto",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"linkedServiceName": {
+							"referenceName": "db",
+							"type": "LinkedServiceReference"
+						},
+						"typeProperties": {
+							"scripts": [
+								{
+									"type": "Query",
+									"text": "TRUNCATE TABLE venta;"
+								}
+							],
+							"scriptBlockExecutionTimeout": "02:00:00"
+						}
+					},
+					{
+						"name": "DR_updateVariedades",
+						"type": "ExecuteDataFlow",
+						"dependsOn": [
+							{
+								"activity": "DF_updateVenta",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataflow": {
+								"referenceName": "updateVariedades",
+								"type": "DataFlowReference",
+								"parameters": {},
+								"datasetParameters": {
+									"source1": {},
+									"sink1": {}
+								}
+							},
+							"staging": {},
+							"integrationRuntime": {
+								"referenceName": "integrationRuntime-central-us",
+								"type": "IntegrationRuntimeReference"
+							},
+							"traceLevel": "Fine"
+						}
+					},
+					{
+						"name": "DR_updateCotizacion",
+						"type": "ExecuteDataFlow",
+						"dependsOn": [
+							{
+								"activity": "truncate cotizacion",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataflow": {
+								"referenceName": "UpdateCotizacion",
+								"type": "DataFlowReference",
+								"parameters": {},
+								"datasetParameters": {
+									"source1": {},
+									"sink1": {}
+								}
+							},
+							"staging": {},
+							"integrationRuntime": {
+								"referenceName": "integrationRuntime-central-us",
+								"type": "IntegrationRuntimeReference"
+							},
+							"traceLevel": "Fine"
+						}
+					},
+					{
+						"name": "truncate cotizacion",
+						"type": "Script",
+						"dependsOn": [
+							{
+								"activity": "DR_updateVariedades",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"linkedServiceName": {
+							"referenceName": "db",
+							"type": "LinkedServiceReference"
+						},
+						"typeProperties": {
+							"scripts": [
+								{
+									"type": "Query",
+									"text": "TRUNCATE TABLE cotizacion;"
+								}
+							],
+							"scriptBlockExecutionTimeout": "02:00:00"
+						}
+					},
+					{
+						"name": "DF_utilidades",
+						"type": "ExecuteDataFlow",
+						"dependsOn": [
+							{
+								"activity": "DR_updateCotizacion",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataflow": {
+								"referenceName": "utilidad_ventas_articulos",
+								"type": "DataFlowReference",
+								"parameters": {},
+								"datasetParameters": {
+									"source1": {},
+									"sink1": {}
+								}
+							},
+							"staging": {},
+							"integrationRuntime": {
+								"referenceName": "integrationRuntime-central-us",
+								"type": "IntegrationRuntimeReference"
+							},
+							"traceLevel": "Fine"
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"annotations": [],
+				"lastPublishTime": "2025-09-10T16:05:31Z"
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/dataflows/updateTipoProducto')]",
+				"[concat(variables('factoryId'), '/integrationRuntimes/integrationRuntime-central-us')]",
+				"[concat(variables('factoryId'), '/dataflows/updateMarca')]",
+				"[concat(variables('factoryId'), '/dataflows/updateMoneda')]",
+				"[concat(variables('factoryId'), '/dataflows/updateCategoriaCliente')]",
+				"[concat(variables('factoryId'), '/dataflows/updateCliente')]",
+				"[concat(variables('factoryId'), '/dataflows/updateProducto')]",
+				"[concat(variables('factoryId'), '/dataflows/updateStock')]",
+				"[concat(variables('factoryId'), '/dataflows/updateVentas')]",
+				"[concat(variables('factoryId'), '/linkedServices/db')]",
+				"[concat(variables('factoryId'), '/dataflows/updateVariedades')]",
+				"[concat(variables('factoryId'), '/dataflows/UpdateCotizacion')]",
+				"[concat(variables('factoryId'), '/dataflows/utilidad_ventas_articulos')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/ex')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "Data flow1",
+						"type": "ExecuteDataFlow",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataflow": {
+								"referenceName": "updateVentas",
+								"type": "DataFlowReference",
+								"parameters": {},
+								"datasetParameters": {
+									"source1": {},
+									"source2": {},
+									"source3": {},
+									"sink1": {}
+								}
+							},
+							"staging": {},
+							"integrationRuntime": {
+								"referenceName": "integrationRuntime-central-us",
+								"type": "IntegrationRuntimeReference"
+							},
+							"traceLevel": "Coarse"
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"annotations": [],
+				"lastPublishTime": "2025-09-10T17:19:23Z"
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/dataflows/updateVentas')]",
+				"[concat(variables('factoryId'), '/integrationRuntimes/integrationRuntime-central-us')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/bands')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "BlobStorage",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "blobEntrante"
+				},
+				"annotations": [],
+				"type": "Json",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"fileName": "bands",
+						"container": "lavakan"
+					}
+				},
+				"schema": {
+					"type": "object",
+					"properties": {
+						"id": {
+							"type": "integer"
+						},
+						"nombre": {
+							"type": "string"
+						},
+						"fecha_modificado": {
+							"type": "string"
+						}
+					}
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/BlobStorage')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/clientes')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "BlobStorage",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "blobEntrante"
+				},
+				"annotations": [],
+				"type": "Json",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"fileName": "clientes",
+						"container": "lavakan"
+					}
+				},
+				"schema": {
+					"type": "object",
+					"properties": {
+						"id": {
+							"type": "integer"
+						},
+						"tipo": {
+							"type": "string"
+						},
+						"mostrar_como": {
+							"type": "string"
+						},
+						"nombres": {
+							"type": "string"
+						},
+						"apellidos": {
+							"type": "string"
+						},
+						"identificador1": {
+							"type": "null"
+						},
+						"identificador2": {
+							"type": "null"
+						},
+						"categoria": {
+							"type": "object",
+							"properties": {
+								"id": {
+									"type": "string"
+								},
+								"nombre": {
+									"type": "string"
+								},
+								"lista_precios": {
+									"type": "integer"
+								}
+							}
+						},
+						"direccion": {
+							"type": "string"
+						},
+						"localidad": {
+							"type": "string"
+						},
+						"departamento": {
+							"type": "string"
+						},
+						"pais": {
+							"type": "string"
+						},
+						"telefono1": {
+							"type": "string"
+						},
+						"telefono2": {
+							"type": "string"
+						},
+						"email1": {
+							"type": "string"
+						},
+						"email2": {
+							"type": "null"
+						},
+						"comentario": {
+							"type": "null"
+						},
+						"ramo_ocupacion": {
+							"type": "null"
+						},
+						"pagina_web": {
+							"type": "null"
+						},
+						"aniversario": {
+							"type": "string"
+						}
+					}
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/BlobStorage')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/cotizacion')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "BlobStorage",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "blobEntrante"
+				},
+				"annotations": [],
+				"type": "Excel",
+				"typeProperties": {
+					"sheetName": "Sheet1",
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"fileName": "cotizaciones.xlsx",
+						"container": "lavakan"
+					},
+					"firstRowAsHeader": true
+				},
+				"schema": [
+					{
+						"name": "CDiFecha",
+						"type": "String"
+					},
+					{
+						"name": "CDiTipoCotizacion",
+						"type": "String"
+					},
+					{
+						"name": "CDiMoneda",
+						"type": "String"
+					},
+					{
+						"name": "CDiCotizaEn",
+						"type": "String"
+					},
+					{
+						"name": "CDiCompra",
+						"type": "String"
+					},
+					{
+						"name": "CDiVenta",
+						"type": "String"
+					},
+					{
+						"name": "CDiDivisaDe",
+						"type": "String"
+					},
+					{
+						"name": "CDiDivisaA",
+						"type": "String"
+					},
+					{
+						"name": "M1",
+						"type": "String"
+					},
+					{
+						"name": "M2",
+						"type": "String"
+					},
+					{
+						"name": "TCMNombre",
+						"type": "String"
+					},
+					{
+						"name": "FMT",
+						"type": "String"
+					},
+					{
+						"name": "Redondeo",
+						"type": "String"
+					}
+				]
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/BlobStorage')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/currency')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "BlobStorage",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "blobEntrante"
+				},
+				"annotations": [],
+				"type": "Json",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"fileName": "currency",
+						"container": "lavakan"
+					}
+				},
+				"schema": {
+					"type": "object",
+					"properties": {
+						"id": {
+							"type": "integer"
+						},
+						"nombre": {
+							"type": "string"
+						},
+						"simbolo": {
+							"type": "string"
+						},
+						"codigo_internacional": {
+							"type": "integer"
+						},
+						"codigo_ISO4217": {
+							"type": "string"
+						},
+						"decimales": {
+							"type": "integer"
+						}
+					}
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/BlobStorage')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/productos')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "BlobStorage",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "blobEntrante"
+				},
+				"annotations": [],
+				"type": "Json",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"fileName": "allProducts",
+						"container": "lavakan"
+					}
+				},
+				"schema": {
+					"type": "object",
+					"properties": {
+						"baja": {
+							"type": "boolean"
+						},
+						"id": {
+							"type": "integer"
+						},
+						"codigo": {
+							"type": "string"
+						},
+						"nombre": {
+							"type": "string"
+						},
+						"fecha_alta": {
+							"type": "string"
+						},
+						"fecha_modificado": {
+							"type": "string"
+						},
+						"descripcion_corta": {
+							"type": "string"
+						},
+						"descripcion_larga": {
+							"type": "string"
+						},
+						"stock": {
+							"type": "integer"
+						},
+						"precio": {
+							"type": "number"
+						},
+						"impuesto": {
+							"type": "number"
+						},
+						"id_moneda": {
+							"type": "integer"
+						},
+						"tipo": {
+							"type": "object",
+							"properties": {
+								"id": {
+									"type": "integer"
+								},
+								"nombre": {
+									"type": "string"
+								}
+							}
+						},
+						"marca": {
+							"type": "object",
+							"properties": {
+								"id": {
+									"type": "integer"
+								},
+								"nombre": {
+									"type": "string"
+								}
+							}
+						},
+						"unidad_de_medida": {
+							"type": "object",
+							"properties": {
+								"id": {
+									"type": "integer"
+								},
+								"nombre": {
+									"type": "string"
+								},
+								"decimales": {
+									"type": "integer"
+								}
+							}
+						},
+						"variedades": {
+							"type": "array",
+							"items": {
+								"type": "object",
+								"properties": {
+									"id": {
+										"type": "integer"
+									},
+									"nombre": {
+										"type": "string"
+									},
+									"descripcion": {
+										"type": "string"
+									},
+									"fecha_modificado": {
+										"type": "string"
+									},
+									"precio": {
+										"type": "number"
+									},
+									"id_moneda": {
+										"type": "integer"
+									},
+									"atributos": {
+										"type": "array",
+										"items": {
+											"type": "object",
+											"properties": {
+												"atributo": {
+													"type": "string"
+												},
+												"valor": {
+													"type": "string"
+												}
+											}
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/BlobStorage')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/suc11stock')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "BlobStorage",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "blobEntrante"
+				},
+				"annotations": [],
+				"type": "Json",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"fileName": "stock-suc-11",
+						"container": "lavakan"
+					}
+				},
+				"schema": {
+					"type": "object",
+					"properties": {
+						"articulo": {
+							"type": "integer"
+						},
+						"codigo": {
+							"type": "string"
+						},
+						"nombre": {
+							"type": "string"
+						},
+						"variedad": {
+							"type": "integer"
+						},
+						"estado": {
+							"type": "object",
+							"properties": {
+								"id": {
+									"type": "integer"
+								},
+								"nombre": {
+									"type": "string"
+								},
+								"abreviacion": {
+									"type": "string"
+								}
+							}
+						},
+						"cantidad": {
+							"type": "number"
+						},
+						"modificado_articulo": {
+							"type": "string"
+						},
+						"modificado_stock": {
+							"type": "string"
+						}
+					}
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/BlobStorage')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/suc1stock')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "BlobStorage",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "blobEntrante"
+				},
+				"annotations": [],
+				"type": "Json",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"fileName": "stock-suc-1",
+						"container": "lavakan"
+					}
+				},
+				"schema": {
+					"type": "object",
+					"properties": {
+						"articulo": {
+							"type": "integer"
+						},
+						"codigo": {
+							"type": "string"
+						},
+						"nombre": {
+							"type": "string"
+						},
+						"variedad": {
+							"type": "integer"
+						},
+						"estado": {
+							"type": "object",
+							"properties": {
+								"id": {
+									"type": "integer"
+								},
+								"nombre": {
+									"type": "string"
+								},
+								"abreviacion": {
+									"type": "string"
+								}
+							}
+						},
+						"cantidad": {
+							"type": "number"
+						},
+						"modificado_articulo": {
+							"type": "string"
+						},
+						"modificado_stock": {
+							"type": "string"
+						}
+					}
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/BlobStorage')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/tablaCategoriaCliente')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "db",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "dbo"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [
+					{
+						"name": "id",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "nombre",
+						"type": "nvarchar"
+					},
+					{
+						"name": "lista_precios",
+						"type": "int",
+						"precision": 10
+					}
+				],
+				"typeProperties": {
+					"schema": "dbo",
+					"table": "categoria_cliente"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/db')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/tablaCliente')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "db",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "dbo"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [
+					{
+						"name": "id",
+						"type": "bigint",
+						"precision": 19
+					},
+					{
+						"name": "tipo",
+						"type": "text"
+					},
+					{
+						"name": "mostrar_como",
+						"type": "text"
+					},
+					{
+						"name": "nombres",
+						"type": "text"
+					},
+					{
+						"name": "apellidos",
+						"type": "text"
+					},
+					{
+						"name": "identificador1",
+						"type": "text"
+					},
+					{
+						"name": "identificador2",
+						"type": "text"
+					},
+					{
+						"name": "categoria_id",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "localidad",
+						"type": "text"
+					},
+					{
+						"name": "departamento",
+						"type": "text"
+					},
+					{
+						"name": "pais",
+						"type": "text"
+					},
+					{
+						"name": "telefono1",
+						"type": "text"
+					},
+					{
+						"name": "telefono2",
+						"type": "text"
+					},
+					{
+						"name": "email1",
+						"type": "text"
+					},
+					{
+						"name": "email2",
+						"type": "text"
+					},
+					{
+						"name": "aniversario",
+						"type": "date"
+					}
+				],
+				"typeProperties": {
+					"schema": "dbo",
+					"table": "cliente"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/db')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/tablaCotizacion')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "db",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "dbo"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [
+					{
+						"name": "id",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "fecha",
+						"type": "datetime",
+						"precision": 23,
+						"scale": 3
+					},
+					{
+						"name": "id_moneda_origen",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "id_moneda_destino",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "valor_compra",
+						"type": "decimal",
+						"precision": 18,
+						"scale": 6
+					},
+					{
+						"name": "valor_venta",
+						"type": "decimal",
+						"precision": 18,
+						"scale": 6
+					},
+					{
+						"name": "redondeo",
+						"type": "int",
+						"precision": 10
+					}
+				],
+				"typeProperties": {
+					"schema": "dbo",
+					"table": "cotizacion"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/db')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/tablaMarca')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "db",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "dbo"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [
+					{
+						"name": "id",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "nombre",
+						"type": "nvarchar"
+					},
+					{
+						"name": "fecha_modificado",
+						"type": "datetime",
+						"precision": 23,
+						"scale": 3
+					}
+				],
+				"typeProperties": {
+					"schema": "dbo",
+					"table": "marca"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/db')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/tablaMoneda')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "db",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "dbo"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [
+					{
+						"name": "id",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "nombre",
+						"type": "nvarchar"
+					},
+					{
+						"name": "simbolo",
+						"type": "nvarchar"
+					},
+					{
+						"name": "codigo_internacional",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "codigo_iso4217",
+						"type": "nvarchar"
+					},
+					{
+						"name": "decimales",
+						"type": "int",
+						"precision": 10
+					}
+				],
+				"typeProperties": {
+					"schema": "dbo",
+					"table": "moneda"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/db')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/tablaProducto')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "db",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "dbo"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [
+					{
+						"name": "id",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "codigo",
+						"type": "varchar"
+					},
+					{
+						"name": "nombre",
+						"type": "varchar"
+					},
+					{
+						"name": "descripcion_corta",
+						"type": "text"
+					},
+					{
+						"name": "descripcion_larga",
+						"type": "text"
+					},
+					{
+						"name": "fecha_alta",
+						"type": "datetime",
+						"precision": 23,
+						"scale": 3
+					},
+					{
+						"name": "fecha_modificado",
+						"type": "datetime",
+						"precision": 23,
+						"scale": 3
+					},
+					{
+						"name": "baja",
+						"type": "bit"
+					},
+					{
+						"name": "precio_base",
+						"type": "decimal",
+						"precision": 18,
+						"scale": 4
+					},
+					{
+						"name": "id_moneda",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "id_tipo_producto",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "id_marca",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "unidad_medida_nombre",
+						"type": "varchar"
+					}
+				],
+				"typeProperties": {
+					"schema": "dbo",
+					"table": "producto"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/db')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/tablaStock')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "db",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "dbo"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [
+					{
+						"name": "id_producto",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "id_variedad",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "id_sucursal",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "cantidad",
+						"type": "decimal",
+						"precision": 18,
+						"scale": 2
+					},
+					{
+						"name": "fecha_modificado",
+						"type": "datetime",
+						"precision": 23,
+						"scale": 3
+					}
+				],
+				"typeProperties": {
+					"schema": "dbo",
+					"table": "stock"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/db')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/tablaSucursal')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "db",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "dbo"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [
+					{
+						"name": "id",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "nombre",
+						"type": "varchar"
+					}
+				],
+				"typeProperties": {
+					"schema": "dbo",
+					"table": "sucursal"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/db')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/tablaTipoProducto')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "db",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "dbo"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [
+					{
+						"name": "id",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "nombre",
+						"type": "nvarchar"
+					},
+					{
+						"name": "fecha_modificado",
+						"type": "datetime",
+						"precision": 23,
+						"scale": 3
+					},
+					{
+						"name": "id_padre",
+						"type": "int",
+						"precision": 10
+					}
+				],
+				"typeProperties": {
+					"schema": "dbo",
+					"table": "tipo_producto"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/db')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/tablaVariedad')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "db",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "dbo"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [
+					{
+						"name": "id",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "id_producto",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "nombre",
+						"type": "varchar"
+					},
+					{
+						"name": "descripcion",
+						"type": "text"
+					},
+					{
+						"name": "fecha_modificado",
+						"type": "datetime",
+						"precision": 23,
+						"scale": 3
+					},
+					{
+						"name": "precio",
+						"type": "decimal",
+						"precision": 18,
+						"scale": 0
+					},
+					{
+						"name": "id_moneda",
+						"type": "int",
+						"precision": 10
+					}
+				],
+				"typeProperties": {
+					"schema": "dbo",
+					"table": "variedad"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/db')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/tablaVenta')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "db",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "dbo"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [
+					{
+						"name": "id",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "fecha",
+						"type": "datetime",
+						"precision": 23,
+						"scale": 3
+					},
+					{
+						"name": "comprobante",
+						"type": "varchar"
+					},
+					{
+						"name": "numero_comprobante",
+						"type": "varchar"
+					},
+					{
+						"name": "id_sucursal",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "comentario",
+						"type": "nvarchar"
+					},
+					{
+						"name": "id_cliente",
+						"type": "bigint",
+						"precision": 19
+					},
+					{
+						"name": "sku",
+						"type": "varchar"
+					},
+					{
+						"name": "comentario_producto",
+						"type": "nvarchar"
+					},
+					{
+						"name": "cantidad",
+						"type": "decimal",
+						"precision": 18,
+						"scale": 2
+					},
+					{
+						"name": "id_producto",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "id_variedad",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "id_moneda",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "importe_neto",
+						"type": "decimal",
+						"precision": 18,
+						"scale": 4
+					},
+					{
+						"name": "tasa_iva",
+						"type": "decimal",
+						"precision": 5,
+						"scale": 2
+					},
+					{
+						"name": "descuento_porcentaje",
+						"type": "decimal",
+						"precision": 5,
+						"scale": 2
+					},
+					{
+						"name": "importe_bruto",
+						"type": "decimal",
+						"precision": 18,
+						"scale": 4
+					},
+					{
+						"name": "vendedor",
+						"type": "nvarchar"
+					}
+				],
+				"typeProperties": {
+					"schema": "dbo",
+					"table": "venta"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/db')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/tipoProducto')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "BlobStorage",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "blobEntrante"
+				},
+				"annotations": [],
+				"type": "Json",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"fileName": "tipos",
+						"container": "lavakan"
+					}
+				},
+				"schema": {
+					"type": "object",
+					"properties": {
+						"id": {
+							"type": "string"
+						},
+						"nombre": {
+							"type": "string"
+						},
+						"fecha_modificado": {
+							"type": "string"
+						},
+						"hijos": {
+							"type": "array",
+							"items": {
+								"type": "object",
+								"properties": {
+									"id": {
+										"type": "string"
+									},
+									"nombre": {
+										"type": "string"
+									},
+									"fecha_modificado": {
+										"type": "string"
+									},
+									"hijos": {
+										"type": "array",
+										"items": {
+											"type": "object",
+											"properties": {
+												"id": {
+													"type": "string"
+												},
+												"nombre": {
+													"type": "string"
+												},
+												"fecha_modificado": {
+													"type": "string"
+												},
+												"hijos": {
+													"type": "array",
+													"items": {
+														"type": "object",
+														"properties": {
+															"id": {
+																"type": "string"
+															},
+															"nombre": {
+																"type": "string"
+															},
+															"fecha_modificado": {
+																"type": "string"
+															},
+															"hijos": {
+																"type": "null"
+															},
+															"cat_impuestos": {
+																"type": "object",
+																"properties": {
+																	"id": {
+																		"type": "string"
+																	},
+																	"nombre": {
+																		"type": "string"
+																	},
+																	"abreviacion": {
+																		"type": "string"
+																	}
+																}
+															}
+														}
+													}
+												},
+												"cat_impuestos": {
+													"type": "object",
+													"properties": {
+														"id": {
+															"type": "string"
+														},
+														"nombre": {
+															"type": "string"
+														},
+														"abreviacion": {
+															"type": "string"
+														}
+													}
+												}
+											}
+										}
+									},
+									"cat_impuestos": {
+										"type": "object",
+										"properties": {
+											"id": {
+												"type": "string"
+											},
+											"nombre": {
+												"type": "string"
+											},
+											"abreviacion": {
+												"type": "string"
+											}
+										}
+									}
+								}
+							}
+						},
+						"cat_impuestos": {
+							"type": "object",
+							"properties": {
+								"id": {
+									"type": "string"
+								},
+								"nombre": {
+									"type": "string"
+								},
+								"abreviacion": {
+									"type": "string"
+								}
+							}
+						}
+					}
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/BlobStorage')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/utilidad_ventas_articulos')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "BlobStorage",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "blobEntrante"
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"fileName": "utilidad_ventas_articulos.csv",
+						"container": "lavakan"
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "\\",
+					"firstRowAsHeader": true,
+					"quoteChar": "\""
+				},
+				"schema": [
+					{
+						"name": "ArtID",
+						"type": "String"
+					},
+					{
+						"name": "AVaID",
+						"type": "String"
+					},
+					{
+						"name": "Nombre",
+						"type": "String"
+					},
+					{
+						"name": "Codigo",
+						"type": "String"
+					},
+					{
+						"name": "Cantidad",
+						"type": "String"
+					},
+					{
+						"name": "Ventas",
+						"type": "String"
+					},
+					{
+						"name": "Costos",
+						"type": "String"
+					},
+					{
+						"name": "Utilidad",
+						"type": "String"
+					},
+					{
+						"name": "UtilidadProm",
+						"type": "String"
+					},
+					{
+						"name": "PorcUtilidad",
+						"type": "String"
+					},
+					{
+						"name": "PorcPart",
+						"type": "String"
+					},
+					{
+						"name": "Ranking",
+						"type": "String"
+					},
+					{
+						"name": "UMeDecimales",
+						"type": "String"
+					},
+					{
+						"name": "suc",
+						"type": "String"
+					},
+					{
+						"name": "fecha",
+						"type": "String"
+					}
+				]
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/BlobStorage')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/utilidades')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "db",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "dbo"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [
+					{
+						"name": "id_producto",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "id_variedad",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "codigo_producto",
+						"type": "varchar"
+					},
+					{
+						"name": "cantidad",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "moneda_id",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "valor_venta",
+						"type": "decimal",
+						"precision": 18,
+						"scale": 6
+					},
+					{
+						"name": "valor_costo",
+						"type": "decimal",
+						"precision": 18,
+						"scale": 6
+					},
+					{
+						"name": "sucursal",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "fecha",
+						"type": "date"
+					},
+					{
+						"name": "nombre_producto",
+						"type": "varchar"
+					}
+				],
+				"typeProperties": {
+					"schema": "dbo",
+					"table": "utilidades"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/db')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/ventas')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "BlobStorage",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "blobEntrante"
+				},
+				"annotations": [],
+				"type": "Excel",
+				"typeProperties": {
+					"sheetName": "Sheet1",
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"fileName": "diario_ventas.xlsx",
+						"container": "lavakan"
+					},
+					"firstRowAsHeader": true
+				},
+				"schema": [
+					{
+						"name": "Fecha",
+						"type": "String"
+					},
+					{
+						"name": "Comprobante",
+						"type": "String"
+					},
+					{
+						"name": "Numero",
+						"type": "String"
+					},
+					{
+						"name": "SucNombre",
+						"type": "String"
+					},
+					{
+						"name": "Identificador",
+						"type": "String"
+					},
+					{
+						"name": "Contacto",
+						"type": "String"
+					},
+					{
+						"name": "ArtCodigo",
+						"type": "String"
+					},
+					{
+						"name": "ArtSKU",
+						"type": "String"
+					},
+					{
+						"name": "ArtNombre",
+						"type": "String"
+					},
+					{
+						"name": "ArtComentario",
+						"type": "String"
+					},
+					{
+						"name": "ArtCantidad",
+						"type": "String"
+					},
+					{
+						"name": "Moneda",
+						"type": "String"
+					},
+					{
+						"name": "ArtNetoFinal",
+						"type": "String"
+					},
+					{
+						"name": "ArtImpuesto1",
+						"type": "String"
+					},
+					{
+						"name": "ArtTasaImp1",
+						"type": "String"
+					},
+					{
+						"name": "ArtDescuento",
+						"type": "String"
+					},
+					{
+						"name": "ArtBrutoFinal",
+						"type": "String"
+					},
+					{
+						"name": "Vendedor",
+						"type": "String"
+					},
+					{
+						"name": "Comentario",
+						"type": "String"
+					},
+					{
+						"name": "Id",
+						"type": "String"
+					},
+					{
+						"name": "ContactoId",
+						"type": "String"
+					},
+					{
+						"name": "Estado",
+						"type": "String"
+					},
+					{
+						"name": "QDecimalesMoneda",
+						"type": "String"
+					},
+					{
+						"name": "FormatoMoneda",
+						"type": "String"
+					},
+					{
+						"name": "TotalComprobante",
+						"type": "String"
+					},
+					{
+						"name": "RedondeoComprobante",
+						"type": "String"
+					},
+					{
+						"name": "ArtId",
+						"type": "String"
+					},
+					{
+						"name": "AVaId",
+						"type": "String"
+					},
+					{
+						"name": "ArtCodigoBarras",
+						"type": "String"
+					},
+					{
+						"name": "UMeDecimales",
+						"type": "String"
+					},
+					{
+						"name": "ArtImpuesto2",
+						"type": "String"
+					},
+					{
+						"name": "ArtTasaImp2",
+						"type": "String"
+					},
+					{
+						"name": "ArtImpuesto3",
+						"type": "String"
+					},
+					{
+						"name": "ArtTasaImp3",
+						"type": "String"
+					},
+					{
+						"name": "ArtImpuesto4",
+						"type": "String"
+					},
+					{
+						"name": "ArtTasaImp4",
+						"type": "String"
+					},
+					{
+						"name": "ArtImpuesto5",
+						"type": "String"
+					},
+					{
+						"name": "ArtTasaImp5",
+						"type": "String"
+					},
+					{
+						"name": "ArtImpuesto6",
+						"type": "String"
+					},
+					{
+						"name": "ArtTasaImp6",
+						"type": "String"
+					}
+				]
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/BlobStorage')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/BlobStorage')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "AzureBlobStorage",
+				"typeProperties": {
+					"connectionString": "[parameters('BlobStorage_connectionString')]"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/db')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "AzureSqlDatabase",
+				"typeProperties": {
+					"server": "[parameters('db_properties_typeProperties_server')]",
+					"database": "[parameters('db_properties_typeProperties_database')]",
+					"encrypt": "mandatory",
+					"trustServerCertificate": false,
+					"authenticationType": "SQL",
+					"userName": "[parameters('db_properties_typeProperties_userName')]",
+					"password": {
+						"type": "SecureString",
+						"value": "[parameters('db_password')]"
+					}
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/trigger1')]",
+			"type": "Microsoft.DataFactory/factories/triggers",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"runtimeState": "Started",
+				"pipelines": [
+					{
+						"pipelineReference": {
+							"referenceName": "ActualizarDatosZureo",
+							"type": "PipelineReference"
+						},
+						"parameters": {}
+					}
+				],
+				"type": "ScheduleTrigger",
+				"typeProperties": {
+					"recurrence": {
+						"frequency": "Day",
+						"interval": 1,
+						"startTime": "2025-07-20T10:00:00",
+						"timeZone": "Montevideo Standard Time",
+						"schedule": {
+							"minutes": [
+								30
+							],
+							"hours": [
+								7
+							]
+						}
+					}
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/pipelines/ActualizarDatosZureo')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/integrationRuntime-central-us')]",
+			"type": "Microsoft.DataFactory/factories/integrationRuntimes",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "Managed",
+				"typeProperties": {
+					"computeProperties": {
+						"location": "Central US",
+						"dataFlowProperties": {
+							"computeType": "General",
+							"coreCount": 8,
+							"timeToLive": 10,
+							"cleanup": false,
+							"customProperties": []
+						}
+					}
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/UpdateCotizacion')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"dataset": {
+								"referenceName": "cotizacion",
+								"type": "DatasetReference"
+							},
+							"name": "source1"
+						}
+					],
+					"sinks": [
+						{
+							"dataset": {
+								"referenceName": "tablaCotizacion",
+								"type": "DatasetReference"
+							},
+							"name": "sink1"
+						}
+					],
+					"transformations": [
+						{
+							"name": "select1"
+						},
+						{
+							"name": "derivedColumn1"
+						}
+					],
+					"scriptLines": [
+						"source(output(",
+						"          CDiFecha as string,",
+						"          CDiTipoCotizacion as string,",
+						"          CDiMoneda as string,",
+						"          CDiCotizaEn as string,",
+						"          CDiCompra as string,",
+						"          CDiVenta as string,",
+						"          CDiDivisaDe as string,",
+						"          CDiDivisaA as string,",
+						"          M1 as string,",
+						"          M2 as string,",
+						"          TCMNombre as string,",
+						"          FMT as string,",
+						"          Redondeo as string",
+						"     ),",
+						"     allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     ignoreNoFilesFound: false) ~> source1",
+						"source1 select(mapColumn(",
+						"          fecha = CDiFecha,",
+						"          id_moneda_origen = CDiMoneda,",
+						"          id_moneda_destino = CDiCotizaEn,",
+						"          valor_compra = CDiCompra,",
+						"          valor_venta = CDiVenta,",
+						"          Redondeo",
+						"     ),",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true) ~> select1",
+						"select1 derive(fecha = toTimestamp(fecha, 'yyyy-MM-dd\\'T\\'HH:mm:ss'),",
+						"          id_moneda_origen = toInteger(id_moneda_origen),",
+						"          id_moneda_destino = toInteger(id_moneda_destino),",
+						"          valor_compra = toDecimal(valor_compra, 18, 6),",
+						"          valor_venta = toDecimal(valor_venta, 18, 6),",
+						"          Redondeo = toInteger(Redondeo)) ~> derivedColumn1",
+						"derivedColumn1 sink(allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     input(",
+						"          id as integer,",
+						"          fecha as timestamp,",
+						"          id_moneda_origen as integer,",
+						"          id_moneda_destino as integer,",
+						"          valor_compra as decimal(18,6),",
+						"          valor_venta as decimal(18,6),",
+						"          redondeo as integer",
+						"     ),",
+						"     deletable:false,",
+						"     insertable:true,",
+						"     updateable:false,",
+						"     upsertable:false,",
+						"     format: 'table',",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true,",
+						"     errorHandlingOption: 'stopOnFirstError',",
+						"     mapColumn(",
+						"          fecha,",
+						"          id_moneda_origen,",
+						"          id_moneda_destino,",
+						"          valor_compra,",
+						"          valor_venta,",
+						"          redondeo = Redondeo",
+						"     )) ~> sink1"
+					]
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/cotizacion')]",
+				"[concat(variables('factoryId'), '/datasets/tablaCotizacion')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/updateCategoriaCliente')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"dataset": {
+								"referenceName": "clientes",
+								"type": "DatasetReference"
+							},
+							"name": "source1"
+						}
+					],
+					"sinks": [
+						{
+							"dataset": {
+								"referenceName": "tablaCategoriaCliente",
+								"type": "DatasetReference"
+							},
+							"name": "sink1"
+						}
+					],
+					"transformations": [
+						{
+							"name": "select1"
+						},
+						{
+							"name": "aggregate1"
+						},
+						{
+							"name": "AlterRow1"
+						},
+						{
+							"name": "derivedColumn1"
+						}
+					],
+					"scriptLines": [
+						"source(output(",
+						"          id as integer,",
+						"          tipo as string,",
+						"          mostrar_como as string,",
+						"          nombres as string,",
+						"          apellidos as string,",
+						"          identificador1 as string,",
+						"          identificador2 as string,",
+						"          categoria as (id as string, nombre as string, lista_precios as integer),",
+						"          direccion as string,",
+						"          localidad as string,",
+						"          departamento as string,",
+						"          pais as string,",
+						"          telefono1 as string,",
+						"          telefono2 as string,",
+						"          email1 as string,",
+						"          email2 as string,",
+						"          comentario as string,",
+						"          ramo_ocupacion as string,",
+						"          pagina_web as string,",
+						"          aniversario as string",
+						"     ),",
+						"     allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     ignoreNoFilesFound: false,",
+						"     documentForm: 'documentPerLine') ~> source1",
+						"source1 select(mapColumn(",
+						"          id = categoria.id,",
+						"          nombre = categoria.nombre,",
+						"          lista_precios = categoria.lista_precios",
+						"     ),",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true) ~> select1",
+						"derivedColumn1 aggregate(groupBy(id,",
+						"          nombre,",
+						"          lista_precios),",
+						"     conteo = count(id)) ~> aggregate1",
+						"aggregate1 alterRow(upsertIf(true())) ~> AlterRow1",
+						"select1 derive(id = toInteger(id)) ~> derivedColumn1",
+						"AlterRow1 sink(allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     input(",
+						"          id as integer,",
+						"          nombre as string,",
+						"          lista_precios as integer",
+						"     ),",
+						"     deletable:false,",
+						"     insertable:false,",
+						"     updateable:false,",
+						"     upsertable:true,",
+						"     keys:['id'],",
+						"     format: 'table',",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true,",
+						"     errorHandlingOption: 'stopOnFirstError') ~> sink1"
+					]
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/clientes')]",
+				"[concat(variables('factoryId'), '/datasets/tablaCategoriaCliente')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/updateCliente')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"dataset": {
+								"referenceName": "clientes",
+								"type": "DatasetReference"
+							},
+							"name": "source1"
+						}
+					],
+					"sinks": [
+						{
+							"dataset": {
+								"referenceName": "tablaCliente",
+								"type": "DatasetReference"
+							},
+							"name": "sink1"
+						}
+					],
+					"transformations": [
+						{
+							"name": "derivedColumn1"
+						},
+						{
+							"name": "select1"
+						},
+						{
+							"name": "alterRow1"
+						}
+					],
+					"scriptLines": [
+						"source(output(",
+						"          id as integer,",
+						"          tipo as string,",
+						"          mostrar_como as string,",
+						"          nombres as string,",
+						"          apellidos as string,",
+						"          identificador1 as string,",
+						"          identificador2 as string,",
+						"          categoria as (id as string, nombre as string, lista_precios as integer),",
+						"          direccion as string,",
+						"          localidad as string,",
+						"          departamento as string,",
+						"          pais as string,",
+						"          telefono1 as string,",
+						"          telefono2 as string,",
+						"          email1 as string,",
+						"          email2 as string,",
+						"          comentario as string,",
+						"          ramo_ocupacion as string,",
+						"          pagina_web as string,",
+						"          aniversario as string",
+						"     ),",
+						"     allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     ignoreNoFilesFound: false,",
+						"     documentForm: 'documentPerLine') ~> source1",
+						"select1 derive(categoria_id = toInteger(categoria_id),",
+						"          aniversario = toDate(aniversario),",
+						"          id = toLong(id)) ~> derivedColumn1",
+						"source1 select(mapColumn(",
+						"          id,",
+						"          tipo,",
+						"          mostrar_como,",
+						"          nombres,",
+						"          apellidos,",
+						"          identificador1,",
+						"          identificador2,",
+						"          categoria_id = categoria.id,",
+						"          localidad,",
+						"          departamento,",
+						"          pais,",
+						"          telefono1,",
+						"          telefono2,",
+						"          email1,",
+						"          email2,",
+						"          aniversario",
+						"     ),",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true) ~> select1",
+						"derivedColumn1 alterRow(upsertIf(true())) ~> alterRow1",
+						"alterRow1 sink(allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     input(",
+						"          id as long,",
+						"          tipo as string,",
+						"          mostrar_como as string,",
+						"          nombres as string,",
+						"          apellidos as string,",
+						"          identificador1 as string,",
+						"          identificador2 as string,",
+						"          categoria_id as integer,",
+						"          localidad as string,",
+						"          departamento as string,",
+						"          pais as string,",
+						"          telefono1 as string,",
+						"          telefono2 as string,",
+						"          email1 as string,",
+						"          email2 as string,",
+						"          aniversario as date",
+						"     ),",
+						"     deletable:false,",
+						"     insertable:false,",
+						"     updateable:false,",
+						"     upsertable:true,",
+						"     keys:['id'],",
+						"     format: 'table',",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true,",
+						"     errorHandlingOption: 'stopOnFirstError',",
+						"     mapColumn(",
+						"          id,",
+						"          tipo,",
+						"          mostrar_como,",
+						"          nombres,",
+						"          apellidos,",
+						"          identificador1,",
+						"          identificador2,",
+						"          categoria_id,",
+						"          localidad,",
+						"          departamento,",
+						"          pais,",
+						"          telefono1,",
+						"          telefono2,",
+						"          email1,",
+						"          email2,",
+						"          aniversario",
+						"     )) ~> sink1"
+					]
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/clientes')]",
+				"[concat(variables('factoryId'), '/datasets/tablaCliente')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/updateMarca')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"dataset": {
+								"referenceName": "bands",
+								"type": "DatasetReference"
+							},
+							"name": "marca"
+						}
+					],
+					"sinks": [
+						{
+							"dataset": {
+								"referenceName": "tablaMarca",
+								"type": "DatasetReference"
+							},
+							"name": "dbMarca"
+						}
+					],
+					"transformations": [
+						{
+							"name": "AlterRow1"
+						},
+						{
+							"name": "derivedColumn1"
+						}
+					],
+					"scriptLines": [
+						"source(output(",
+						"          id as integer,",
+						"          nombre as string,",
+						"          fecha_modificado as string",
+						"     ),",
+						"     allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     ignoreNoFilesFound: false,",
+						"     documentForm: 'documentPerLine') ~> marca",
+						"derivedColumn1 alterRow(upsertIf(true())) ~> AlterRow1",
+						"marca derive(fecha_modificado = iif(\r",
+						"  fecha_modificado == '0001-01-01T00:00:00',\r",
+						"  toTimestamp('1900-01-01T00:00:00'),\r",
+						"  toTimestamp(fecha_modificado, 'yyyy-MM-dd\\'T\\'HH:mm:ss')\r",
+						")) ~> derivedColumn1",
+						"AlterRow1 sink(allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     input(",
+						"          id as integer,",
+						"          nombre as string,",
+						"          fecha_modificado as timestamp",
+						"     ),",
+						"     deletable:false,",
+						"     insertable:false,",
+						"     updateable:false,",
+						"     upsertable:true,",
+						"     keys:['id'],",
+						"     format: 'table',",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true,",
+						"     errorHandlingOption: 'stopOnFirstError') ~> dbMarca"
+					]
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/bands')]",
+				"[concat(variables('factoryId'), '/datasets/tablaMarca')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/updateMoneda')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"dataset": {
+								"referenceName": "currency",
+								"type": "DatasetReference"
+							},
+							"name": "Moneda"
+						}
+					],
+					"sinks": [
+						{
+							"dataset": {
+								"referenceName": "tablaMoneda",
+								"type": "DatasetReference"
+							},
+							"name": "dbMoneda"
+						}
+					],
+					"transformations": [
+						{
+							"name": "AlterRow1"
+						}
+					],
+					"scriptLines": [
+						"source(output(",
+						"          id as integer,",
+						"          nombre as string,",
+						"          simbolo as string,",
+						"          codigo_internacional as integer,",
+						"          codigo_ISO4217 as string,",
+						"          decimales as integer",
+						"     ),",
+						"     allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     ignoreNoFilesFound: false,",
+						"     documentForm: 'documentPerLine') ~> Moneda",
+						"Moneda alterRow(upsertIf(true())) ~> AlterRow1",
+						"AlterRow1 sink(allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     input(",
+						"          id as integer,",
+						"          nombre as string,",
+						"          simbolo as string,",
+						"          codigo_internacional as integer,",
+						"          codigo_iso4217 as string,",
+						"          decimales as integer",
+						"     ),",
+						"     deletable:false,",
+						"     insertable:false,",
+						"     updateable:false,",
+						"     upsertable:true,",
+						"     keys:['id'],",
+						"     format: 'table',",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true,",
+						"     errorHandlingOption: 'stopOnFirstError') ~> dbMoneda"
+					]
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/currency')]",
+				"[concat(variables('factoryId'), '/datasets/tablaMoneda')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/updateProducto')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"dataset": {
+								"referenceName": "productos",
+								"type": "DatasetReference"
+							},
+							"name": "source1"
+						},
+						{
+							"dataset": {
+								"referenceName": "suc11stock",
+								"type": "DatasetReference"
+							},
+							"name": "source2"
+						},
+						{
+							"dataset": {
+								"referenceName": "suc1stock",
+								"type": "DatasetReference"
+							},
+							"name": "source3"
+						},
+						{
+							"dataset": {
+								"referenceName": "ventas",
+								"type": "DatasetReference"
+							},
+							"name": "source4"
+						}
+					],
+					"sinks": [
+						{
+							"dataset": {
+								"referenceName": "tablaProducto",
+								"type": "DatasetReference"
+							},
+							"name": "sink1"
+						}
+					],
+					"transformations": [
+						{
+							"name": "select1"
+						},
+						{
+							"name": "alterRow1"
+						},
+						{
+							"name": "derivedColumn1"
+						},
+						{
+							"name": "filter1"
+						},
+						{
+							"name": "lookup1"
+						},
+						{
+							"name": "union1"
+						},
+						{
+							"name": "select2"
+						},
+						{
+							"name": "aggregate1"
+						},
+						{
+							"name": "select3"
+						},
+						{
+							"name": "select4"
+						},
+						{
+							"name": "lookup2"
+						},
+						{
+							"name": "derivedColumn2"
+						},
+						{
+							"name": "derivedColumn3"
+						},
+						{
+							"name": "select5"
+						},
+						{
+							"name": "derivedColumn4"
+						}
+					],
+					"scriptLines": [
+						"source(output(",
+						"          baja as boolean,",
+						"          id as integer,",
+						"          codigo as string,",
+						"          nombre as string,",
+						"          fecha_alta as string,",
+						"          fecha_modificado as string,",
+						"          descripcion_corta as string,",
+						"          descripcion_larga as string,",
+						"          stock as integer,",
+						"          precio as double,",
+						"          impuesto as double,",
+						"          id_moneda as integer,",
+						"          tipo as (id as integer, nombre as string),",
+						"          marca as (id as integer, nombre as string),",
+						"          unidad_de_medida as (id as integer, nombre as string, decimales as integer),",
+						"          variedades as (id as integer, nombre as string, descripcion as string, fecha_modificado as string, precio as double, id_moneda as integer, atributos as (atributo as string, valor as string)[])[]",
+						"     ),",
+						"     allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     ignoreNoFilesFound: false,",
+						"     documentForm: 'documentPerLine') ~> source1",
+						"source(output(",
+						"          articulo as integer,",
+						"          codigo as string,",
+						"          nombre as string,",
+						"          variedad as integer,",
+						"          estado as (id as integer, nombre as string, abreviacion as string),",
+						"          cantidad as double,",
+						"          modificado_articulo as string,",
+						"          modificado_stock as string",
+						"     ),",
+						"     allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     ignoreNoFilesFound: false,",
+						"     documentForm: 'documentPerLine') ~> source2",
+						"source(output(",
+						"          articulo as integer,",
+						"          codigo as string,",
+						"          nombre as string,",
+						"          variedad as integer,",
+						"          estado as (id as integer, nombre as string, abreviacion as string),",
+						"          cantidad as double,",
+						"          modificado_articulo as string,",
+						"          modificado_stock as string",
+						"     ),",
+						"     allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     ignoreNoFilesFound: false,",
+						"     documentForm: 'documentPerLine') ~> source3",
+						"source(output(",
+						"          Fecha as string,",
+						"          Comprobante as string,",
+						"          Numero as string,",
+						"          SucNombre as string,",
+						"          Identificador as string,",
+						"          Contacto as string,",
+						"          ArtCodigo as string,",
+						"          ArtSKU as string,",
+						"          ArtNombre as string,",
+						"          ArtComentario as string,",
+						"          ArtCantidad as string,",
+						"          Moneda as string,",
+						"          ArtNetoFinal as string,",
+						"          ArtImpuesto1 as string,",
+						"          ArtTasaImp1 as string,",
+						"          ArtDescuento as string,",
+						"          ArtBrutoFinal as string,",
+						"          Vendedor as string,",
+						"          Comentario as string,",
+						"          Id as string,",
+						"          ContactoId as string,",
+						"          Estado as string,",
+						"          QDecimalesMoneda as string,",
+						"          FormatoMoneda as string,",
+						"          TotalComprobante as string,",
+						"          RedondeoComprobante as string,",
+						"          ArtId as string,",
+						"          AVaId as string,",
+						"          ArtCodigoBarras as string,",
+						"          UMeDecimales as string,",
+						"          ArtImpuesto2 as string,",
+						"          ArtTasaImp2 as string,",
+						"          ArtImpuesto3 as string,",
+						"          ArtTasaImp3 as string,",
+						"          ArtImpuesto4 as string,",
+						"          ArtTasaImp4 as string,",
+						"          ArtImpuesto5 as string,",
+						"          ArtTasaImp5 as string,",
+						"          ArtImpuesto6 as string,",
+						"          ArtTasaImp6 as string",
+						"     ),",
+						"     allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     ignoreNoFilesFound: false) ~> source4",
+						"source1 select(mapColumn(",
+						"          baja,",
+						"          id,",
+						"          codigo,",
+						"          nombre,",
+						"          fecha_alta,",
+						"          fecha_modificado,",
+						"          descripcion_corta,",
+						"          descripcion_larga,",
+						"          precio_base = precio,",
+						"          id_moneda,",
+						"          id_tipo_producto = tipo.id,",
+						"          id_marca = marca.id,",
+						"          unidad_medida_nombre = unidad_de_medida.nombre",
+						"     ),",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true) ~> select1",
+						"select5 alterRow(upsertIf(true())) ~> alterRow1",
+						"select1 derive(fecha_alta = iif(  isNull(toTimestamp(fecha_alta, 'yyyy-MM-dd\\'T\\'HH:mm:ss.SSS')),   toTimestamp(fecha_alta, 'yyyy-MM-dd\\'T\\'HH:mm:ss'),   toTimestamp(fecha_alta, 'yyyy-MM-dd\\'T\\'HH:mm:ss.SSS')),",
+						"          fecha_modificado = iif(  isNull(toTimestamp(fecha_modificado, 'yyyy-MM-dd\\'T\\'HH:mm:ss.SSS')),   toTimestamp(fecha_modificado, 'yyyy-MM-dd\\'T\\'HH:mm:ss'),   toTimestamp(fecha_modificado, 'yyyy-MM-dd\\'T\\'HH:mm:ss.SSS')),",
+						"          precio_base = toDecimal(precio_base)) ~> derivedColumn1",
+						"alterRow1 filter(!isNull(codigo)) ~> filter1",
+						"derivedColumn1, select2 lookup(id == id_prod,",
+						"     multiple: false,",
+						"     pickup: 'any',",
+						"     broadcast: 'auto')~> lookup1",
+						"source3, source2 union(byName: true)~> union1",
+						"aggregate1 select(mapColumn(",
+						"          id_prod = articulo,",
+						"          nombre_prod = nombre",
+						"     ),",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true) ~> select2",
+						"union1 aggregate(groupBy(articulo),",
+						"     nombre = first(nombre)) ~> aggregate1",
+						"derivedColumn4 select(mapColumn(",
+						"          baja,",
+						"          id,",
+						"          codigo,",
+						"          fecha_alta,",
+						"          fecha_modificado,",
+						"          descripcion_corta,",
+						"          descripcion_larga,",
+						"          precio_base,",
+						"          id_moneda,",
+						"          id_tipo_producto,",
+						"          id_marca,",
+						"          unidad_medida_nombre,",
+						"          nombre",
+						"     ),",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true) ~> select3",
+						"source4 select(mapColumn(",
+						"          ArtNombre,",
+						"          ArtId",
+						"     ),",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true) ~> select4",
+						"select3, derivedColumn2 lookup(id == ArtId,",
+						"     multiple: false,",
+						"     pickup: 'any',",
+						"     broadcast: 'auto')~> lookup2",
+						"select4 derive(ArtId = toInteger(ArtId)) ~> derivedColumn2",
+						"lookup2 derive(nombre = iif(isNull(nombre), ArtNombre, nombre)) ~> derivedColumn3",
+						"derivedColumn3 select(mapColumn(",
+						"          baja,",
+						"          id,",
+						"          codigo,",
+						"          fecha_alta,",
+						"          fecha_modificado,",
+						"          descripcion_corta,",
+						"          descripcion_larga,",
+						"          precio_base,",
+						"          id_moneda,",
+						"          id_tipo_producto,",
+						"          id_marca,",
+						"          unidad_medida_nombre,",
+						"          nombre",
+						"     ),",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true) ~> select5",
+						"lookup1 derive(nombre = iif(isNull(nombre), nombre_prod, nombre)) ~> derivedColumn4",
+						"filter1 sink(allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     input(",
+						"          id as integer,",
+						"          codigo as string,",
+						"          nombre as string,",
+						"          descripcion_corta as string,",
+						"          descripcion_larga as string,",
+						"          fecha_alta as timestamp,",
+						"          fecha_modificado as timestamp,",
+						"          baja as boolean,",
+						"          precio_base as decimal(18,4),",
+						"          id_moneda as integer,",
+						"          id_tipo_producto as integer,",
+						"          id_marca as integer,",
+						"          unidad_medida_nombre as string",
+						"     ),",
+						"     deletable:false,",
+						"     insertable:false,",
+						"     updateable:false,",
+						"     upsertable:true,",
+						"     keys:['id'],",
+						"     format: 'table',",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true,",
+						"     errorHandlingOption: 'stopOnFirstError') ~> sink1"
+					]
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/productos')]",
+				"[concat(variables('factoryId'), '/datasets/suc11stock')]",
+				"[concat(variables('factoryId'), '/datasets/suc1stock')]",
+				"[concat(variables('factoryId'), '/datasets/ventas')]",
+				"[concat(variables('factoryId'), '/datasets/tablaProducto')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/updateStock')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"dataset": {
+								"referenceName": "suc1stock",
+								"type": "DatasetReference"
+							},
+							"name": "suc1"
+						},
+						{
+							"dataset": {
+								"referenceName": "suc11stock",
+								"type": "DatasetReference"
+							},
+							"name": "suc11"
+						}
+					],
+					"sinks": [
+						{
+							"dataset": {
+								"referenceName": "tablaStock",
+								"type": "DatasetReference"
+							},
+							"name": "sink1"
+						}
+					],
+					"transformations": [
+						{
+							"name": "derivedColumn1"
+						},
+						{
+							"name": "derivedColumn2"
+						},
+						{
+							"name": "select1"
+						},
+						{
+							"name": "select2"
+						},
+						{
+							"name": "union1"
+						},
+						{
+							"name": "derivedColumn3"
+						},
+						{
+							"name": "alterRow1"
+						},
+						{
+							"name": "select3"
+						},
+						{
+							"name": "filter1"
+						}
+					],
+					"scriptLines": [
+						"source(output(",
+						"          articulo as integer,",
+						"          codigo as string,",
+						"          nombre as string,",
+						"          variedad as integer,",
+						"          estado as (id as integer, nombre as string, abreviacion as string),",
+						"          cantidad as double,",
+						"          modificado_articulo as string,",
+						"          modificado_stock as string",
+						"     ),",
+						"     allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     ignoreNoFilesFound: false,",
+						"     documentForm: 'documentPerLine') ~> suc1",
+						"source(output(",
+						"          articulo as integer,",
+						"          codigo as string,",
+						"          nombre as string,",
+						"          variedad as integer,",
+						"          estado as (id as integer, nombre as string, abreviacion as string),",
+						"          cantidad as double,",
+						"          modificado_articulo as string,",
+						"          modificado_stock as string",
+						"     ),",
+						"     allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     ignoreNoFilesFound: false,",
+						"     documentForm: 'documentPerLine') ~> suc11",
+						"suc1 derive(id_sucursal = 1,",
+						"          articulo = toInteger(articulo)) ~> derivedColumn1",
+						"suc11 derive(id_sucursal = 11,",
+						"          articulo = toInteger(articulo)) ~> derivedColumn2",
+						"derivedColumn2 select(mapColumn(",
+						"          id_variedad = variedad,",
+						"          id_sucursal,",
+						"          cantidad,",
+						"          fecha_modificado = modificado_stock,",
+						"          id_producto = articulo",
+						"     ),",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true) ~> select1",
+						"derivedColumn1 select(mapColumn(",
+						"          id_variedad = variedad,",
+						"          id_sucursal,",
+						"          cantidad,",
+						"          fecha_modificado = modificado_stock,",
+						"          id_producto = articulo",
+						"     ),",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true) ~> select2",
+						"select2, select1 union(byName: true)~> union1",
+						"union1 derive(fecha_modificado = toTimestamp(fecha_modificado, 'yyyy-MM-dd\\'T\\'HH:mm:ss'),",
+						"          cantidad = toDecimal(cantidad)) ~> derivedColumn3",
+						"select3 alterRow(upsertIf(true())) ~> alterRow1",
+						"filter1 select(mapColumn(",
+						"          id_variedad,",
+						"          id_sucursal,",
+						"          cantidad,",
+						"          fecha_modificado,",
+						"          id_producto",
+						"     ),",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true) ~> select3",
+						"derivedColumn3 filter(!isNull(id_variedad)) ~> filter1",
+						"alterRow1 sink(allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     input(",
+						"          id_producto as integer,",
+						"          id_variedad as integer,",
+						"          id_sucursal as integer,",
+						"          cantidad as decimal(18,2),",
+						"          fecha_modificado as timestamp",
+						"     ),",
+						"     deletable:false,",
+						"     insertable:false,",
+						"     updateable:false,",
+						"     upsertable:true,",
+						"     keys:['id_variedad','id_sucursal','id_producto'],",
+						"     format: 'table',",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true,",
+						"     errorHandlingOption: 'stopOnFirstError') ~> sink1"
+					]
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/suc1stock')]",
+				"[concat(variables('factoryId'), '/datasets/suc11stock')]",
+				"[concat(variables('factoryId'), '/datasets/tablaStock')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/updateTipoProducto')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"dataset": {
+								"referenceName": "tipoProducto",
+								"type": "DatasetReference"
+							},
+							"name": "tipoProducto"
+						}
+					],
+					"sinks": [
+						{
+							"dataset": {
+								"referenceName": "tablaTipoProducto",
+								"type": "DatasetReference"
+							},
+							"name": "dbTipoProducto"
+						}
+					],
+					"transformations": [
+						{
+							"name": "AlterRow1"
+						},
+						{
+							"name": "derivedColumn2"
+						},
+						{
+							"name": "union1"
+						},
+						{
+							"name": "flatten1"
+						},
+						{
+							"name": "select1"
+						},
+						{
+							"name": "select2"
+						},
+						{
+							"name": "flatten2"
+						},
+						{
+							"name": "select3"
+						},
+						{
+							"name": "flatten3"
+						},
+						{
+							"name": "select4"
+						},
+						{
+							"name": "filter1"
+						}
+					],
+					"scriptLines": [
+						"source(output(",
+						"          id as string,",
+						"          nombre as string,",
+						"          fecha_modificado as string,",
+						"          hijos as (id as string, nombre as string, fecha_modificado as string, hijos as (id as string, nombre as string, fecha_modificado as string, hijos as (id as string, nombre as string, fecha_modificado as string, hijos as string, cat_impuestos as (id as string, nombre as string, abreviacion as string))[], cat_impuestos as (id as string, nombre as string, abreviacion as string))[], cat_impuestos as (id as string, nombre as string, abreviacion as string))[],",
+						"          cat_impuestos as (id as string, nombre as string, abreviacion as string)",
+						"     ),",
+						"     allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     ignoreNoFilesFound: false,",
+						"     documentForm: 'documentPerLine') ~> tipoProducto",
+						"derivedColumn2 alterRow(upsertIf(true())) ~> AlterRow1",
+						"filter1 derive(fecha_modificado = iif(\r",
+						"  isNull(toTimestamp(fecha_modificado, 'yyyy-MM-dd\\'T\\'HH:mm:ss.SSS')), \r",
+						"  toTimestamp(fecha_modificado, 'yyyy-MM-dd\\'T\\'HH:mm:ss'), \r",
+						"  toTimestamp(fecha_modificado, 'yyyy-MM-dd\\'T\\'HH:mm:ss.SSS')\r",
+						"),",
+						"          id = toInteger(id),",
+						"          id_padre = toInteger(id_padre)) ~> derivedColumn2",
+						"select4, select3, select2, select1 union(byName: true)~> union1",
+						"tipoProducto foldDown(unroll(hijos),",
+						"     mapColumn(",
+						"          id = hijos.id,",
+						"          nombre = hijos.nombre,",
+						"          fecha_modificado = hijos.fecha_modificado,",
+						"          hijos = hijos.hijos,",
+						"          id_padre = id",
+						"     ),",
+						"     skipDuplicateMapInputs: false,",
+						"     skipDuplicateMapOutputs: false) ~> flatten1",
+						"tipoProducto select(mapColumn(",
+						"          id,",
+						"          nombre,",
+						"          fecha_modificado",
+						"     ),",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true) ~> select1",
+						"flatten1 select(mapColumn(",
+						"          id,",
+						"          nombre,",
+						"          fecha_modificado,",
+						"          id_padre",
+						"     ),",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true) ~> select2",
+						"flatten1 foldDown(unroll(hijos),",
+						"     mapColumn(",
+						"          id = hijos.id,",
+						"          nombre = hijos.nombre,",
+						"          fecha_modificado = hijos.fecha_modificado,",
+						"          hijos = hijos.hijos,",
+						"          id_padre = id",
+						"     ),",
+						"     skipDuplicateMapInputs: false,",
+						"     skipDuplicateMapOutputs: false) ~> flatten2",
+						"flatten2 select(mapColumn(",
+						"          id,",
+						"          nombre,",
+						"          fecha_modificado,",
+						"          id_padre",
+						"     ),",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true) ~> select3",
+						"flatten2 foldDown(unroll(hijos),",
+						"     mapColumn(",
+						"          id = hijos.id,",
+						"          nombre = hijos.nombre,",
+						"          fecha_modificado,",
+						"          id_padre = id",
+						"     ),",
+						"     skipDuplicateMapInputs: false,",
+						"     skipDuplicateMapOutputs: false) ~> flatten3",
+						"flatten3 select(mapColumn(",
+						"          id,",
+						"          nombre,",
+						"          fecha_modificado,",
+						"          id_padre",
+						"     ),",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true) ~> select4",
+						"union1 filter(!isNull(id)) ~> filter1",
+						"AlterRow1 sink(allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     input(",
+						"          id as integer,",
+						"          nombre as string,",
+						"          fecha_modificado as timestamp,",
+						"          id_padre as integer",
+						"     ),",
+						"     deletable:false,",
+						"     insertable:false,",
+						"     updateable:false,",
+						"     upsertable:true,",
+						"     keys:['id'],",
+						"     format: 'table',",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true,",
+						"     errorHandlingOption: 'stopOnFirstError') ~> dbTipoProducto"
+					]
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/tipoProducto')]",
+				"[concat(variables('factoryId'), '/datasets/tablaTipoProducto')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/updateVariedades')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"dataset": {
+								"referenceName": "productos",
+								"type": "DatasetReference"
+							},
+							"name": "source1"
+						}
+					],
+					"sinks": [
+						{
+							"dataset": {
+								"referenceName": "tablaVariedad",
+								"type": "DatasetReference"
+							},
+							"name": "sink1"
+						}
+					],
+					"transformations": [
+						{
+							"name": "flatten1"
+						},
+						{
+							"name": "select1"
+						},
+						{
+							"name": "derivedColumn1"
+						},
+						{
+							"name": "alterRow1"
+						},
+						{
+							"name": "filter1"
+						}
+					],
+					"scriptLines": [
+						"source(output(",
+						"          baja as boolean,",
+						"          id as integer,",
+						"          codigo as string,",
+						"          nombre as string,",
+						"          fecha_alta as string,",
+						"          fecha_modificado as string,",
+						"          descripcion_corta as string,",
+						"          descripcion_larga as string,",
+						"          stock as integer,",
+						"          precio as double,",
+						"          impuesto as double,",
+						"          id_moneda as integer,",
+						"          tipo as (id as integer, nombre as string),",
+						"          marca as (id as integer, nombre as string),",
+						"          unidad_de_medida as (id as integer, nombre as string, decimales as integer),",
+						"          variedades as (id as integer, nombre as string, descripcion as string, fecha_modificado as string, precio as double, id_moneda as integer, atributos as (atributo as string, valor as string)[])[]",
+						"     ),",
+						"     allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     ignoreNoFilesFound: false,",
+						"     documentForm: 'documentPerLine') ~> source1",
+						"source1 foldDown(unroll(variedades),",
+						"     mapColumn(",
+						"          id = variedades.id,",
+						"          nombre = variedades.nombre,",
+						"          descripcion = variedades.descripcion,",
+						"          fecha_modificado = variedades.fecha_modificado,",
+						"          precio = variedades.precio,",
+						"          id_moneda = variedades.id_moneda,",
+						"          id_producto = id",
+						"     ),",
+						"     skipDuplicateMapInputs: false,",
+						"     skipDuplicateMapOutputs: false) ~> flatten1",
+						"flatten1 select(mapColumn(",
+						"          id,",
+						"          nombre,",
+						"          descripcion,",
+						"          fecha_modificado,",
+						"          precio,",
+						"          id_moneda,",
+						"          id_producto",
+						"     ),",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true) ~> select1",
+						"select1 derive(fecha_modificado = toTimestamp(fecha_modificado),",
+						"          precio = toDecimal(precio)) ~> derivedColumn1",
+						"derivedColumn1 alterRow(upsertIf(true())) ~> alterRow1",
+						"alterRow1 filter(!isNull(id)) ~> filter1",
+						"filter1 sink(allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     input(",
+						"          id as integer,",
+						"          id_producto as integer,",
+						"          nombre as string,",
+						"          descripcion as string,",
+						"          fecha_modificado as timestamp,",
+						"          precio as decimal(18,0),",
+						"          id_moneda as integer",
+						"     ),",
+						"     deletable:false,",
+						"     insertable:false,",
+						"     updateable:false,",
+						"     upsertable:true,",
+						"     keys:['id_producto','id'],",
+						"     format: 'table',",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true,",
+						"     errorHandlingOption: 'stopOnFirstError',",
+						"     mapColumn(",
+						"          id,",
+						"          id_producto,",
+						"          nombre,",
+						"          descripcion,",
+						"          fecha_modificado,",
+						"          precio,",
+						"          id_moneda",
+						"     )) ~> sink1"
+					]
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/productos')]",
+				"[concat(variables('factoryId'), '/datasets/tablaVariedad')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/updateVentas')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"dataset": {
+								"referenceName": "ventas",
+								"type": "DatasetReference"
+							},
+							"name": "source1"
+						},
+						{
+							"dataset": {
+								"referenceName": "tablaMoneda",
+								"type": "DatasetReference"
+							},
+							"name": "source2"
+						},
+						{
+							"dataset": {
+								"referenceName": "tablaSucursal",
+								"type": "DatasetReference"
+							},
+							"name": "source3"
+						}
+					],
+					"sinks": [
+						{
+							"dataset": {
+								"referenceName": "tablaVenta",
+								"type": "DatasetReference"
+							},
+							"name": "sink1"
+						}
+					],
+					"transformations": [
+						{
+							"name": "select1"
+						},
+						{
+							"name": "lookup1"
+						},
+						{
+							"name": "select2"
+						},
+						{
+							"name": "lookup2"
+						},
+						{
+							"name": "select3"
+						},
+						{
+							"name": "derivedColumn1"
+						}
+					],
+					"scriptLines": [
+						"source(output(",
+						"          Fecha as timestamp 'yyyy-MM-dd\\'T\\'HH:mm:ss',",
+						"          Comprobante as string,",
+						"          Numero as string,",
+						"          SucNombre as string,",
+						"          Identificador as string,",
+						"          Contacto as string,",
+						"          ArtCodigo as string,",
+						"          ArtSKU as string,",
+						"          ArtNombre as string,",
+						"          ArtComentario as string,",
+						"          ArtCantidad as integer,",
+						"          Moneda as string,",
+						"          ArtNetoFinal as string,",
+						"          ArtImpuesto1 as string,",
+						"          ArtTasaImp1 as string,",
+						"          ArtDescuento as string,",
+						"          ArtBrutoFinal as string,",
+						"          Vendedor as string,",
+						"          Comentario as string,",
+						"          Id as string,",
+						"          ContactoId as long,",
+						"          Estado as string,",
+						"          QDecimalesMoneda as string,",
+						"          FormatoMoneda as string,",
+						"          TotalComprobante as string,",
+						"          RedondeoComprobante as string,",
+						"          ArtId as integer,",
+						"          AVaId as integer,",
+						"          ArtCodigoBarras as string,",
+						"          UMeDecimales as string,",
+						"          ArtImpuesto2 as string,",
+						"          ArtTasaImp2 as string,",
+						"          ArtImpuesto3 as string,",
+						"          ArtTasaImp3 as string,",
+						"          ArtImpuesto4 as string,",
+						"          ArtTasaImp4 as string,",
+						"          ArtImpuesto5 as string,",
+						"          ArtTasaImp5 as string,",
+						"          ArtImpuesto6 as string,",
+						"          ArtTasaImp6 as string",
+						"     ),",
+						"     allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     ignoreNoFilesFound: false) ~> source1",
+						"source(output(",
+						"          id as integer,",
+						"          nombre as string,",
+						"          simbolo as string,",
+						"          codigo_internacional as integer,",
+						"          codigo_iso4217 as string,",
+						"          decimales as integer",
+						"     ),",
+						"     allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     isolationLevel: 'READ_UNCOMMITTED',",
+						"     format: 'table') ~> source2",
+						"source(output(",
+						"          id as integer,",
+						"          nombre as string",
+						"     ),",
+						"     allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     isolationLevel: 'READ_UNCOMMITTED',",
+						"     format: 'table') ~> source3",
+						"source1 select(mapColumn(",
+						"          Fecha,",
+						"          Comprobante,",
+						"          numero_comprobante = Numero,",
+						"          sku = ArtSKU,",
+						"          comentario_producto = ArtComentario,",
+						"          cantidad = ArtCantidad,",
+						"          id_cliente = ContactoId,",
+						"          vendedor = Vendedor,",
+						"          id_producto = ArtId,",
+						"          importe_neto = ArtNetoFinal,",
+						"          tasa_iva = ArtTasaImp1,",
+						"          importe_bruto = ArtBrutoFinal,",
+						"          descuento_porcentaje = ArtDescuento,",
+						"          Moneda,",
+						"          id_variedad = AVaId,",
+						"          Comentario,",
+						"          SucNombre",
+						"     ),",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true) ~> select1",
+						"select1, source2 lookup(Moneda == simbolo,",
+						"     multiple: false,",
+						"     pickup: 'any',",
+						"     broadcast: 'auto')~> lookup1",
+						"lookup1 select(mapColumn(",
+						"          Fecha,",
+						"          Comprobante,",
+						"          numero_comprobante,",
+						"          sku,",
+						"          comentario_producto,",
+						"          cantidad,",
+						"          id_cliente,",
+						"          vendedor,",
+						"          id_producto,",
+						"          importe_neto,",
+						"          tasa_iva,",
+						"          importe_bruto,",
+						"          descuento_porcentaje,",
+						"          id_moneda = id,",
+						"          id_variedad,",
+						"          Comentario,",
+						"          SucNombre",
+						"     ),",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true) ~> select2",
+						"select2, source3 lookup(SucNombre == nombre,",
+						"     multiple: false,",
+						"     pickup: 'any',",
+						"     broadcast: 'auto')~> lookup2",
+						"lookup2 select(mapColumn(",
+						"          Fecha,",
+						"          Comprobante,",
+						"          numero_comprobante,",
+						"          sku,",
+						"          comentario_producto,",
+						"          cantidad,",
+						"          id_cliente,",
+						"          vendedor,",
+						"          id_producto,",
+						"          importe_neto,",
+						"          tasa_iva,",
+						"          importe_bruto,",
+						"          descuento_porcentaje,",
+						"          id_moneda,",
+						"          id_variedad,",
+						"          comentario = Comentario,",
+						"          id_sucursal = id",
+						"     ),",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true) ~> select3",
+						"select3 derive(descuento_porcentaje = toDecimal(descuento_porcentaje, 5, 2),",
+						"          importe_neto = toDecimal(importe_neto, 18, 6),",
+						"          importe_bruto = toDecimal(replace(importe_bruto, ',', '.'), 18, 6),",
+						"          tasa_iva = toDecimal(tasa_iva, 5, 4),",
+						"          id_cliente = iif(id_cliente == 0, toLong(null()), id_cliente),",
+						"          cantidad = toDecimal(cantidad, 18, 6)) ~> derivedColumn1",
+						"derivedColumn1 sink(allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     input(",
+						"          id as integer,",
+						"          fecha as timestamp,",
+						"          comprobante as string,",
+						"          numero_comprobante as string,",
+						"          id_sucursal as integer,",
+						"          comentario as string,",
+						"          id_cliente as long,",
+						"          sku as string,",
+						"          comentario_producto as string,",
+						"          cantidad as decimal(18,2),",
+						"          id_producto as integer,",
+						"          id_variedad as integer,",
+						"          id_moneda as integer,",
+						"          importe_neto as decimal(18,4),",
+						"          tasa_iva as decimal(5,2),",
+						"          descuento_porcentaje as decimal(5,2),",
+						"          importe_bruto as decimal(18,4),",
+						"          vendedor as string",
+						"     ),",
+						"     deletable:false,",
+						"     insertable:true,",
+						"     updateable:false,",
+						"     upsertable:false,",
+						"     format: 'table',",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true,",
+						"     errorHandlingOption: 'stopOnFirstError',",
+						"     mapColumn(",
+						"          fecha = Fecha,",
+						"          comprobante = Comprobante,",
+						"          numero_comprobante,",
+						"          id_sucursal,",
+						"          comentario,",
+						"          id_cliente,",
+						"          sku,",
+						"          comentario_producto,",
+						"          cantidad,",
+						"          id_producto,",
+						"          id_variedad,",
+						"          id_moneda,",
+						"          importe_neto,",
+						"          tasa_iva,",
+						"          descuento_porcentaje,",
+						"          importe_bruto,",
+						"          vendedor",
+						"     )) ~> sink1"
+					]
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/ventas')]",
+				"[concat(variables('factoryId'), '/datasets/tablaMoneda')]",
+				"[concat(variables('factoryId'), '/datasets/tablaSucursal')]",
+				"[concat(variables('factoryId'), '/datasets/tablaVenta')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/utilidad_ventas_articulos')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"dataset": {
+								"referenceName": "utilidad_ventas_articulos",
+								"type": "DatasetReference"
+							},
+							"name": "source1"
+						}
+					],
+					"sinks": [
+						{
+							"dataset": {
+								"referenceName": "utilidades",
+								"type": "DatasetReference"
+							},
+							"name": "sink1"
+						}
+					],
+					"transformations": [
+						{
+							"name": "select1"
+						},
+						{
+							"name": "AlterRow1"
+						}
+					],
+					"scriptLines": [
+						"source(output(",
+						"          ArtID as integer,",
+						"          AVaID as integer,",
+						"          Nombre as string,",
+						"          Codigo as string,",
+						"          Cantidad as integer,",
+						"          Ventas as decimal(10,2),",
+						"          Costos as decimal(10,2),",
+						"          Utilidad as string,",
+						"          UtilidadProm as string,",
+						"          PorcUtilidad as string,",
+						"          PorcPart as string,",
+						"          Ranking as string,",
+						"          UMeDecimales as string,",
+						"          suc as integer,",
+						"          fecha as date",
+						"     ),",
+						"     allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     ignoreNoFilesFound: false) ~> source1",
+						"source1 select(mapColumn(",
+						"          id_producto = ArtID,",
+						"          id_variedad = AVaID,",
+						"          nombre_producto = Nombre,",
+						"          codigo_producto = Codigo,",
+						"          cantidad = Cantidad,",
+						"          valor_venta = Ventas,",
+						"          valor_costo = Costos,",
+						"          sucursal = suc,",
+						"          fecha",
+						"     ),",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true) ~> select1",
+						"select1 alterRow(upsertIf(true())) ~> AlterRow1",
+						"AlterRow1 sink(allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     input(",
+						"          id_producto as integer,",
+						"          id_variedad as integer,",
+						"          codigo_producto as string,",
+						"          cantidad as integer,",
+						"          moneda_id as integer,",
+						"          valor_venta as decimal(18,6),",
+						"          valor_costo as decimal(18,6),",
+						"          sucursal as integer,",
+						"          fecha as date,",
+						"          nombre_producto as string",
+						"     ),",
+						"     deletable:false,",
+						"     insertable:true,",
+						"     updateable:false,",
+						"     upsertable:true,",
+						"     keys:['id_producto','id_variedad','sucursal','fecha'],",
+						"     format: 'table',",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true,",
+						"     errorHandlingOption: 'stopOnFirstError',",
+						"     mapColumn(",
+						"          id_producto,",
+						"          id_variedad,",
+						"          codigo_producto,",
+						"          cantidad,",
+						"          valor_venta,",
+						"          valor_costo,",
+						"          sucursal,",
+						"          fecha,",
+						"          nombre_producto",
+						"     )) ~> sink1"
+					]
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/utilidad_ventas_articulos')]",
+				"[concat(variables('factoryId'), '/datasets/utilidades')]"
+			]
+		}
+	]
+}

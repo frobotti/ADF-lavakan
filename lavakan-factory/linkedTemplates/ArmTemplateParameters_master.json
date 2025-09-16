@@ -1,0 +1,30 @@
+{
+	"$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"factoryName": {
+			"value": "lavakan-factory"
+		},
+		"BlobStorage_connectionString": {
+			"value": ""
+		},
+		"db_password": {
+			"value": ""
+		},
+		"db_properties_typeProperties_server": {
+			"value": "sql-lavakan.database.windows.net"
+		},
+		"db_properties_typeProperties_database": {
+			"value": "lavakan"
+		},
+		"db_properties_typeProperties_userName": {
+			"value": "adminuser"
+		},
+		"containerUri": {
+			"value": ""
+		},
+		"containerSasToken": {
+			"value": ""
+		}
+	}
+}

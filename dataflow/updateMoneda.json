@@ -1,6 +1,9 @@
 {
 	"name": "updateMoneda",
 	"properties": {
+		"folder": {
+			"name": "data"
+		},
 		"type": "MappingDataFlow",
 		"typeProperties": {
 			"sources": [

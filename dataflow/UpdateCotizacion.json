@@ -1,6 +1,9 @@
 {
 	"name": "UpdateCotizacion",
 	"properties": {
+		"folder": {
+			"name": "data"
+		},
 		"type": "MappingDataFlow",
 		"typeProperties": {
 			"sources": [

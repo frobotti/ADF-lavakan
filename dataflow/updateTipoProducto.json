@@ -1,6 +1,9 @@
 {
 	"name": "updateTipoProducto",
 	"properties": {
+		"folder": {
+			"name": "data"
+		},
 		"type": "MappingDataFlow",
 		"typeProperties": {
 			"sources": [

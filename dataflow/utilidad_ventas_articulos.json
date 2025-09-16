@@ -1,6 +1,9 @@
 {
 	"name": "utilidad_ventas_articulos",
 	"properties": {
+		"folder": {
+			"name": "data"
+		},
 		"type": "MappingDataFlow",
 		"typeProperties": {
 			"sources": [

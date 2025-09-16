@@ -14,7 +14,7 @@
 			"location": {
 				"type": "AzureBlobStorageLocation",
 				"fileName": "currency",
-				"container": "lavakan"
+				"container": "data"
 			}
 		},
 		"schema": {

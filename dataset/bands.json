@@ -14,7 +14,7 @@
 			"location": {
 				"type": "AzureBlobStorageLocation",
 				"fileName": "bands",
-				"container": "lavakan"
+				"container": "data"
 			}
 		},
 		"schema": {

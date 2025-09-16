@@ -14,7 +14,7 @@
 			"location": {
 				"type": "AzureBlobStorageLocation",
 				"fileName": "stock-suc-1",
-				"container": "lavakan"
+				"container": "data"
 			}
 		},
 		"schema": {

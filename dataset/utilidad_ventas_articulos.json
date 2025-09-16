@@ -14,7 +14,7 @@
 			"location": {
 				"type": "AzureBlobStorageLocation",
 				"fileName": "utilidad_ventas_articulos.csv",
-				"container": "lavakan"
+				"container": "data"
 			},
 			"columnDelimiter": ",",
 			"escapeChar": "\\",

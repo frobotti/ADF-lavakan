@@ -14,7 +14,7 @@
 			"location": {
 				"type": "AzureBlobStorageLocation",
 				"fileName": "clientes",
-				"container": "lavakan"
+				"container": "data"
 			}
 		},
 		"schema": {

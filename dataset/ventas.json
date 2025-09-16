@@ -15,7 +15,7 @@
 			"location": {
 				"type": "AzureBlobStorageLocation",
 				"fileName": "diario_ventas.xlsx",
-				"container": "lavakan"
+				"container": "data"
 			},
 			"firstRowAsHeader": true
 		},

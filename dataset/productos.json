@@ -14,7 +14,7 @@
 			"location": {
 				"type": "AzureBlobStorageLocation",
 				"fileName": "allProducts",
-				"container": "lavakan"
+				"container": "data"
 			}
 		},
 		"schema": {

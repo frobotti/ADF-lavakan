@@ -15,7 +15,7 @@
 			"location": {
 				"type": "AzureBlobStorageLocation",
 				"fileName": "cotizaciones.xlsx",
-				"container": "lavakan"
+				"container": "data"
 			},
 			"firstRowAsHeader": true
 		},

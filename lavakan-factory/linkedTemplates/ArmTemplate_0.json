@@ -106,7 +106,7 @@
 					"location": {
 						"type": "AzureBlobStorageLocation",
 						"fileName": "bands",
-						"container": "lavakan"
+						"container": "data"
 					}
 				},
 				"schema": {
@@ -146,7 +146,7 @@
 					"location": {
 						"type": "AzureBlobStorageLocation",
 						"fileName": "clientes",
-						"container": "lavakan"
+						"container": "data"
 					}
 				},
 				"schema": {
@@ -249,7 +249,7 @@
 					"location": {
 						"type": "AzureBlobStorageLocation",
 						"fileName": "cotizaciones.xlsx",
-						"container": "lavakan"
+						"container": "data"
 					},
 					"firstRowAsHeader": true
 				},
@@ -330,7 +330,7 @@
 					"location": {
 						"type": "AzureBlobStorageLocation",
 						"fileName": "currency",
-						"container": "lavakan"
+						"container": "data"
 					}
 				},
 				"schema": {
@@ -379,7 +379,7 @@
 					"location": {
 						"type": "AzureBlobStorageLocation",
 						"fileName": "allProducts",
-						"container": "lavakan"
+						"container": "data"
 					}
 				},
 				"schema": {
@@ -522,7 +522,7 @@
 					"location": {
 						"type": "AzureBlobStorageLocation",
 						"fileName": "stock-suc-11",
-						"container": "lavakan"
+						"container": "data"
 					}
 				},
 				"schema": {
@@ -588,7 +588,7 @@
 					"location": {
 						"type": "AzureBlobStorageLocation",
 						"fileName": "stock-suc-1",
-						"container": "lavakan"
+						"container": "data"
 					}
 				},
 				"schema": {

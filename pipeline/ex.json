@@ -27,6 +27,9 @@
 				}
 			}
 		],
+		"folder": {
+			"name": "pipeline"
+		},
 		"annotations": [],
 		"lastPublishTime": "2025-09-10T17:19:23Z"
 	},

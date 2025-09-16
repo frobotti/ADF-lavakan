@@ -26,9 +26,9 @@
 						"referenceName": "updateTipoProducto",
 						"type": "DataFlowReference"
 					},
-					"integrationRuntime": {
-						"referenceName": "integrationRuntime-central-us",
-						"type": "IntegrationRuntimeReference"
+					"compute": {
+						"coreCount": 8,
+						"computeType": "General"
 					},
 					"traceLevel": "Fine"
 				}
@@ -57,9 +57,9 @@
 						"referenceName": "updateMarca",
 						"type": "DataFlowReference"
 					},
-					"integrationRuntime": {
-						"referenceName": "integrationRuntime-central-us",
-						"type": "IntegrationRuntimeReference"
+					"compute": {
+						"coreCount": 8,
+						"computeType": "General"
 					},
 					"traceLevel": "Fine"
 				}
@@ -88,9 +88,9 @@
 						"referenceName": "updateMoneda",
 						"type": "DataFlowReference"
 					},
-					"integrationRuntime": {
-						"referenceName": "integrationRuntime-central-us",
-						"type": "IntegrationRuntimeReference"
+					"compute": {
+						"coreCount": 8,
+						"computeType": "General"
 					},
 					"traceLevel": "Fine"
 				}
@@ -119,9 +119,9 @@
 						"referenceName": "updateCategoriaCliente",
 						"type": "DataFlowReference"
 					},
-					"integrationRuntime": {
-						"referenceName": "integrationRuntime-central-us",
-						"type": "IntegrationRuntimeReference"
+					"compute": {
+						"coreCount": 8,
+						"computeType": "General"
 					},
 					"traceLevel": "Fine"
 				}
@@ -419,6 +419,9 @@
 				}
 			}
 		],
+		"folder": {
+			"name": "pipeline"
+		},
 		"annotations": [],
 		"lastPublishTime": "2025-09-10T16:05:31Z"
 	},
